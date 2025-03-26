@@ -116,7 +116,7 @@ internal static partial class Core
 
                 string fileNameOnly = Path.GetFileName(fullPath);
 
-                if (!ushort.TryParse(fileNameOnly.AsSpan(4, 4), NumberStyles.None, NumberFormatInfo.InvariantInfo, out ushort index))
+                if (!TryGetGameSaveIndex(fileNameOnly, out ushort index))
                 {
                     return false;
                 }
@@ -133,6 +133,21 @@ internal static partial class Core
         {
             return false;
         }
+    }
+
+    private static bool TryGetGameSaveIndex(string fileNameOnly, out ushort index)
+    {
+        if (fileNameOnly.EqualsI("quick.sav"))
+        {
+            index = HighestSaveGameIndex;
+            return true;
+        }
+        else if (ushort.TryParse(fileNameOnly.AsSpan(4, 4), NumberStyles.None, NumberFormatInfo.InvariantInfo, out index))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private static bool TrySeekToSaveName(Stream stream)
