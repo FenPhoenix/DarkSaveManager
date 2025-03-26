@@ -67,6 +67,8 @@ sealed partial class MainForm
         Controls.Add(Test1Button);
         Name = "MainForm";
         Text = "Dark Save Manager";
+        FormClosing += MainForm_FormClosing;
+        FormClosed += MainForm_FormClosed;
         ResumeLayout(false);
     }
 

@@ -138,4 +138,9 @@ internal static partial class Core
 
     [GeneratedRegex(@"^game[0-9]{4}\.sav$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex NumberedSaveGameNameRegex();
+
+    internal static void Shutdown()
+    {
+        Application.Exit();
+    }
 }

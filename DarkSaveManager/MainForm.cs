@@ -39,4 +39,13 @@ public sealed partial class MainForm : Form
             InGameSavesTreeView.EndUpdate();
         }
     }
+
+    private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+    }
+
+    private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+    {
+        Core.Shutdown();
+    }
 }
