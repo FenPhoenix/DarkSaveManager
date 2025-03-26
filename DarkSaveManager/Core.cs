@@ -60,11 +60,6 @@ internal static partial class Core
             Span<byte> chunkHeaderBuffer = stackalloc byte[12];
 
             using FileStream stream = File.OpenRead(saveFile);
-            /*
-            TODO: We only support ASCII names for now - can we find some clever way to detect?
-             The T2 source code doesn't seem to explicitly do any encoding stuff at all - save names seem to be read
-             in the OEM codepage (850 in my case): 8B == ï
-            */
             using BinaryReader reader = new(stream);
             uint tocOffset = reader.ReadUInt32();
             stream.Position = tocOffset;
@@ -92,7 +87,9 @@ internal static partial class Core
                 int nameEndIndex = Array.IndexOf(nameBuffer, 0);
                 int nameLength = nameEndIndex == -1 ? nameBuffer.Length : nameEndIndex + 1;
 
-                return (true, Encoding.ASCII.GetString(nameBuffer, 0, nameLength));
+                // The T2 source code doesn't seem to explicitly do any encoding stuff at all - save names seem
+                // to be read in the OEM codepage (850 in my case): 8B == ï
+                return (true, Utils.GetOEMCodePageOrFallback(Encoding.UTF8).GetString(nameBuffer, 0, nameLength));
             }
 
             return (false, "");
