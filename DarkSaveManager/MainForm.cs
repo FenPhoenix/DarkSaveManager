@@ -11,7 +11,7 @@ public sealed partial class MainForm : Form
 
     private void Test1Button_Click(object sender, EventArgs e)
     {
-        List<SaveData> saveDataList = Core.GetSaveData(Config.Thief2Path);
+        List<SaveData> saveDataList = Core.GetSaveDataList(Config.Thief2Path);
         foreach (SaveData saveData in saveDataList)
         {
             Trace.WriteLine("SAVE ITEM:");

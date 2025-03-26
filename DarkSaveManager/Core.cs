@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DarkSaveManager;
@@ -24,32 +27,32 @@ internal static partial class Core
         View = new MainForm();
         View.Show();
 
-        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
+        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
 
         Thief2Watcher.EnableRaisingEvents = true;
     }
 
     private static void Thief2Watcher_Renamed(object sender, RenamedEventArgs e)
     {
-        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
+        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
     }
 
     private static void Thief2Watcher_Deleted(object sender, FileSystemEventArgs e)
     {
-        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
+        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
     }
 
     private static void Thief2Watcher_Created(object sender, FileSystemEventArgs e)
     {
-        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
+        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
     }
 
     private static void Thief2Watcher_Changed(object sender, FileSystemEventArgs e)
     {
-        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
+        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
     }
 
-    internal static List<SaveData> GetSaveData(string gamePath)
+    internal static List<SaveData> GetSaveDataList(string gamePath)
     {
         string savePath = Path.Combine(gamePath, "saves");
         string[] saveFiles = Directory.GetFiles(savePath, "*.sav");
@@ -63,10 +66,8 @@ internal static partial class Core
         List<SaveData> ret = new(saveFiles.Length);
         foreach (string saveFile in saveFiles)
         {
-            (bool success, string saveName) = GetSaveName(saveFile);
-            if (success)
+            if (TryGetSaveData(saveFile, out SaveData? saveData))
             {
-                SaveData saveData = new(saveFile, Path.GetFileName(saveFile), saveName);
                 ret.Add(saveData);
             }
         }
@@ -89,51 +90,101 @@ internal static partial class Core
         return false;
     }
 
-    private static (bool Success, string SaveName) GetSaveName(string saveFile)
+    private static bool TryGetSaveData(string fullPath, [NotNullWhen(true)] out SaveData? saveData)
+    {
+        saveData = null;
+
+        try
+        {
+            using FileStream stream = File.OpenRead(fullPath);
+
+            if (!TrySeekToSaveName(stream)) return false;
+
+            const int maxNameLength = 1024;
+
+            byte[] nameBuffer = ArrayPool<byte>.Shared.Rent(maxNameLength);
+            try
+            {
+                stream.ReadExactly(nameBuffer, 0, maxNameLength);
+
+                int nameEndIndex = Array.IndexOf<byte>(nameBuffer, 0, maxNameLength);
+                int nameLength = nameEndIndex == -1 ? maxNameLength : nameEndIndex + 1;
+
+                // The T2 source code doesn't seem to explicitly do any encoding stuff at all - save names seem
+                // to be read in the OEM codepage (850 in my case): 8B == ï
+                string saveName = Utils.GetOEMCodePageOrFallback(Encoding.UTF8).GetString(nameBuffer, 0, nameLength);
+
+                string fileNameOnly = Path.GetFileName(fullPath);
+
+                if (!ushort.TryParse(fileNameOnly.AsSpan(4, 4), NumberStyles.None, NumberFormatInfo.InvariantInfo, out ushort index))
+                {
+                    return false;
+                }
+
+                saveData = new SaveData(index, fullPath, fileNameOnly, saveName);
+                return true;
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(nameBuffer);
+            }
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool TrySeekToSaveName(Stream stream)
     {
         try
         {
             Span<byte> chunkHeaderBuffer = stackalloc byte[12];
 
-            using FileStream stream = File.OpenRead(saveFile);
-            using BinaryReader reader = new(stream);
+            using BinaryReader reader = new(stream, Encoding.UTF8, leaveOpen: true);
+
             uint tocOffset = reader.ReadUInt32();
+
             stream.Position = tocOffset;
+
             uint invCount = reader.ReadUInt32();
+
             for (int i = 0; i < invCount; i++)
             {
                 stream.ReadExactly(chunkHeaderBuffer);
+
                 uint offset = reader.ReadUInt32();
-                // TODO: Check validity: length fits in int32
+
                 uint length = reader.ReadUInt32();
+                if (length > int.MaxValue)
+                {
+                    return false;
+                }
 
                 if (!chunkHeaderBuffer.SequenceEqual("SAVEDESC\0\0\0\0"u8))
                 {
                     continue;
                 }
 
-                // TODO: Check validity: names match, rest of header format matches
-                stream.Position = offset + 24;
+                stream.Position = offset;
+                stream.ReadExactly(chunkHeaderBuffer);
 
-                // TODO: Cache this
-                byte[] nameBuffer = new byte[1024];
+                // TODO: Dedupe
+                if (!chunkHeaderBuffer.SequenceEqual("SAVEDESC\0\0\0\0"u8))
+                {
+                    return false;
+                }
 
-                stream.ReadExactly(nameBuffer);
-
-                int nameEndIndex = Array.IndexOf(nameBuffer, 0);
-                int nameLength = nameEndIndex == -1 ? nameBuffer.Length : nameEndIndex + 1;
-
-                // The T2 source code doesn't seem to explicitly do any encoding stuff at all - save names seem
-                // to be read in the OEM codepage (850 in my case): 8B == ï
-                return (true, Utils.GetOEMCodePageOrFallback(Encoding.UTF8).GetString(nameBuffer, 0, nameLength));
+                stream.Seek(12, SeekOrigin.Current);
+                return true;
             }
-
-            return (false, "");
         }
         catch
         {
-            return (false, "");
+            return false;
         }
+
+        return false;
     }
 
     [GeneratedRegex(@"^game[0-9]{4}\.sav$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
