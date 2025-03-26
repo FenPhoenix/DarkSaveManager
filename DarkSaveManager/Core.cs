@@ -7,10 +7,46 @@ internal static partial class Core
 {
     internal static MainForm View = null!;
 
+    // TODO: Implement list of them, one for each game path
+    internal static readonly FileSystemWatcher Thief2Watcher = new();
+
     internal static void Init()
     {
+        Thief2Watcher.Path = Config.Thief2Path;
+        Thief2Watcher.Filter = "*.sav";
+        Thief2Watcher.IncludeSubdirectories = true;
+        Thief2Watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+        Thief2Watcher.Changed += Thief2Watcher_Changed;
+        Thief2Watcher.Created += Thief2Watcher_Created;
+        Thief2Watcher.Deleted += Thief2Watcher_Deleted;
+        Thief2Watcher.Renamed += Thief2Watcher_Renamed;
+
         View = new MainForm();
         View.Show();
+
+        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
+
+        Thief2Watcher.EnableRaisingEvents = true;
+    }
+
+    private static void Thief2Watcher_Renamed(object sender, RenamedEventArgs e)
+    {
+        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
+    }
+
+    private static void Thief2Watcher_Deleted(object sender, FileSystemEventArgs e)
+    {
+        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
+    }
+
+    private static void Thief2Watcher_Created(object sender, FileSystemEventArgs e)
+    {
+        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
+    }
+
+    private static void Thief2Watcher_Changed(object sender, FileSystemEventArgs e)
+    {
+        View.RefreshInGameSavesList(GetSaveData(Config.Thief2Path));
     }
 
     internal static List<SaveData> GetSaveData(string gamePath)

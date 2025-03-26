@@ -29,11 +29,13 @@ sealed partial class MainForm
     private void InitializeComponent()
     {
         Test1Button = new Button();
+        InGameSavesTreeView = new TreeView();
+        SwappedOutSavesTreeView = new TreeView();
         SuspendLayout();
         // 
         // Test1Button
         // 
-        Test1Button.Location = new Point(360, 208);
+        Test1Button.Location = new Point(792, 8);
         Test1Button.Name = "Test1Button";
         Test1Button.Size = new Size(75, 23);
         Test1Button.TabIndex = 0;
@@ -41,11 +43,27 @@ sealed partial class MainForm
         Test1Button.UseVisualStyleBackColor = true;
         Test1Button.Click += Test1Button_Click;
         // 
+        // InGameSavesTreeView
+        // 
+        InGameSavesTreeView.Location = new Point(56, 96);
+        InGameSavesTreeView.Name = "InGameSavesTreeView";
+        InGameSavesTreeView.Size = new Size(248, 464);
+        InGameSavesTreeView.TabIndex = 1;
+        // 
+        // SwappedOutSavesTreeView
+        // 
+        SwappedOutSavesTreeView.Location = new Point(512, 96);
+        SwappedOutSavesTreeView.Name = "SwappedOutSavesTreeView";
+        SwappedOutSavesTreeView.Size = new Size(248, 464);
+        SwappedOutSavesTreeView.TabIndex = 1;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(800, 450);
+        ClientSize = new Size(881, 771);
+        Controls.Add(SwappedOutSavesTreeView);
+        Controls.Add(InGameSavesTreeView);
         Controls.Add(Test1Button);
         Name = "MainForm";
         Text = "Dark Save Manager";
@@ -55,4 +73,6 @@ sealed partial class MainForm
     #endregion
 
     private Button Test1Button;
+    private TreeView InGameSavesTreeView;
+    private TreeView SwappedOutSavesTreeView;
 }

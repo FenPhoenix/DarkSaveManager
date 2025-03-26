@@ -11,7 +11,7 @@ public sealed partial class MainForm : Form
 
     private void Test1Button_Click(object sender, EventArgs e)
     {
-        List<SaveData> saveDataList = Core.GetSaveData(@"C:\Thief Games\Thief-ND-TFix2-127a (Titanium Practice)");
+        List<SaveData> saveDataList = Core.GetSaveData(Config.Thief2Path);
         foreach (SaveData saveData in saveDataList)
         {
             Trace.WriteLine("SAVE ITEM:");
@@ -20,6 +20,23 @@ public sealed partial class MainForm : Form
             Trace.WriteLine(saveData.SaveName);
             Trace.WriteLine("");
             Trace.WriteLine("");
+        }
+    }
+
+    internal void RefreshInGameSavesList(List<SaveData> saveDataList)
+    {
+        try
+        {
+            InGameSavesTreeView.BeginUpdate();
+            InGameSavesTreeView.Nodes.Clear();
+            foreach (SaveData saveData in saveDataList)
+            {
+                InGameSavesTreeView.Nodes.Add(saveData.SaveName);
+            }
+        }
+        finally
+        {
+            InGameSavesTreeView.EndUpdate();
         }
     }
 }
