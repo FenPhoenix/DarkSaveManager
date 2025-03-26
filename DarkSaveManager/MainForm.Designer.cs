@@ -31,6 +31,8 @@ sealed partial class MainForm
         Test1Button = new Button();
         InGameSavesTreeView = new TreeView();
         SwappedOutSavesTreeView = new TreeView();
+        MoveToStoreButton = new Button();
+        CopyToStoreButton = new Button();
         SuspendLayout();
         // 
         // Test1Button
@@ -57,11 +59,33 @@ sealed partial class MainForm
         SwappedOutSavesTreeView.Size = new Size(248, 464);
         SwappedOutSavesTreeView.TabIndex = 1;
         // 
+        // MoveToStoreButton
+        // 
+        MoveToStoreButton.Location = new Point(368, 240);
+        MoveToStoreButton.Name = "MoveToStoreButton";
+        MoveToStoreButton.Size = new Size(75, 23);
+        MoveToStoreButton.TabIndex = 2;
+        MoveToStoreButton.Text = "Move ->";
+        MoveToStoreButton.UseVisualStyleBackColor = true;
+        MoveToStoreButton.Click += MoveToStoreButton_Click;
+        // 
+        // CopyToStoreButton
+        // 
+        CopyToStoreButton.Location = new Point(368, 216);
+        CopyToStoreButton.Name = "CopyToStoreButton";
+        CopyToStoreButton.Size = new Size(75, 23);
+        CopyToStoreButton.TabIndex = 2;
+        CopyToStoreButton.Text = "Copy ->";
+        CopyToStoreButton.UseVisualStyleBackColor = true;
+        CopyToStoreButton.Click += CopyToStoreButton_Click;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(881, 771);
+        Controls.Add(CopyToStoreButton);
+        Controls.Add(MoveToStoreButton);
         Controls.Add(SwappedOutSavesTreeView);
         Controls.Add(InGameSavesTreeView);
         Controls.Add(Test1Button);
@@ -77,4 +101,6 @@ sealed partial class MainForm
     private Button Test1Button;
     private TreeView InGameSavesTreeView;
     private TreeView SwappedOutSavesTreeView;
+    private Button MoveToStoreButton;
+    private Button CopyToStoreButton;
 }

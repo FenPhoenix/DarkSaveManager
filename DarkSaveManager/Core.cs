@@ -10,51 +10,56 @@ internal static partial class Core
 {
     internal static MainForm View = null!;
 
+    internal static readonly List<SaveData> InGameSaveDataList = new();
+    internal static readonly List<SaveData> StoredSaveDataList = new();
+
     // TODO: Implement list of them, one for each game path
     internal static readonly FileSystemWatcher Thief2Watcher = new();
+    internal static readonly FileSystemWatcher SaveStoreWatcher = new();
 
     internal static void Init()
     {
+        Directory.CreateDirectory(Paths.SaveStore);
+
         Thief2Watcher.Path = Config.Thief2Path;
         Thief2Watcher.Filter = "*.sav";
-        Thief2Watcher.IncludeSubdirectories = true;
         Thief2Watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
         Thief2Watcher.Changed += Thief2Watcher_Changed;
-        Thief2Watcher.Created += Thief2Watcher_Created;
-        Thief2Watcher.Deleted += Thief2Watcher_Deleted;
-        Thief2Watcher.Renamed += Thief2Watcher_Renamed;
+        Thief2Watcher.Created += Thief2Watcher_Changed;
+        Thief2Watcher.Deleted += Thief2Watcher_Changed;
+        Thief2Watcher.Renamed += Thief2Watcher_Changed;
+
+        SaveStoreWatcher.Path = Paths.SaveStore;
+        SaveStoreWatcher.Filter = "*.sav";
+        SaveStoreWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+        SaveStoreWatcher.Changed += SaveStoreWatcher_Changed;
+        SaveStoreWatcher.Created += SaveStoreWatcher_Changed;
+        SaveStoreWatcher.Deleted += SaveStoreWatcher_Changed;
+        SaveStoreWatcher.Renamed += SaveStoreWatcher_Changed;
 
         View = new MainForm();
         View.Show();
 
-        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
+        RefreshViewAllLists();
 
         Thief2Watcher.EnableRaisingEvents = true;
-    }
-
-    private static void Thief2Watcher_Renamed(object sender, RenamedEventArgs e)
-    {
-        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
-    }
-
-    private static void Thief2Watcher_Deleted(object sender, FileSystemEventArgs e)
-    {
-        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
-    }
-
-    private static void Thief2Watcher_Created(object sender, FileSystemEventArgs e)
-    {
-        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
+        SaveStoreWatcher.EnableRaisingEvents = true;
     }
 
     private static void Thief2Watcher_Changed(object sender, FileSystemEventArgs e)
     {
-        View.RefreshInGameSavesList(GetSaveDataList(Config.Thief2Path));
+        View.Invoke(RefreshViewInGameList);
     }
 
-    internal static List<SaveData> GetSaveDataList(string gamePath)
+    private static void SaveStoreWatcher_Changed(object sender, FileSystemEventArgs e)
     {
-        string savePath = Path.Combine(gamePath, "saves");
+        View.Invoke(RefreshViewStoredList);
+    }
+
+    internal static void FillSaveDataList(string savePath, List<SaveData> saveDataList)
+    {
+        saveDataList.Clear();
+
         string[] saveFiles = Directory.GetFiles(savePath, "*.sav");
         if (AnyInvalidlyNamedSaveFiles(saveFiles))
         {
@@ -63,16 +68,13 @@ internal static partial class Core
             throw new InvalidDataException("*** At least one invalidly named save file found");
         }
 
-        List<SaveData> ret = new(saveFiles.Length);
         foreach (string saveFile in saveFiles)
         {
             if (TryGetSaveData(saveFile, out SaveData? saveData))
             {
-                ret.Add(saveData);
+                saveDataList.Add(saveData);
             }
         }
-
-        return ret;
     }
 
     private static bool AnyInvalidlyNamedSaveFiles(string[] saveFiles)
@@ -200,6 +202,78 @@ internal static partial class Core
         }
 
         return false;
+    }
+
+    // TODO: Handle errors and if it already exists
+    internal static void CopySelectedToStore()
+    {
+        if (View.TryGetSelectedInGameSaveIndex(out int index))
+        {
+            bool oldGameEventWatchingValue = Thief2Watcher.EnableRaisingEvents;
+            bool oldStoreEventWatchingValue = SaveStoreWatcher.EnableRaisingEvents;
+
+            try
+            {
+                Thief2Watcher.EnableRaisingEvents = false;
+                SaveStoreWatcher.EnableRaisingEvents = false;
+
+                // TODO: Validate
+                SaveData saveData = InGameSaveDataList[index];
+                File.Copy(saveData.FullPath, Path.Combine(Paths.SaveStore, saveData.FileName));
+            }
+            finally
+            {
+                RefreshViewAllLists();
+
+                SaveStoreWatcher.EnableRaisingEvents = oldStoreEventWatchingValue;
+                Thief2Watcher.EnableRaisingEvents = oldGameEventWatchingValue;
+            }
+        }
+    }
+
+    // TODO: Handle errors and if it already exists
+    internal static void MoveSelectedToStore()
+    {
+        if (View.TryGetSelectedInGameSaveIndex(out int index))
+        {
+            bool oldGameEventWatchingValue = Thief2Watcher.EnableRaisingEvents;
+            bool oldStoreEventWatchingValue = SaveStoreWatcher.EnableRaisingEvents;
+
+            try
+            {
+                Thief2Watcher.EnableRaisingEvents = false;
+                SaveStoreWatcher.EnableRaisingEvents = false;
+
+                // TODO: Validate
+                SaveData saveData = InGameSaveDataList[index];
+                File.Move(saveData.FullPath, Path.Combine(Paths.SaveStore, saveData.FileName));
+            }
+            finally
+            {
+                RefreshViewAllLists();
+
+                SaveStoreWatcher.EnableRaisingEvents = oldStoreEventWatchingValue;
+                Thief2Watcher.EnableRaisingEvents = oldGameEventWatchingValue;
+            }
+        }
+    }
+
+    private static void RefreshViewAllLists()
+    {
+        RefreshViewInGameList();
+        RefreshViewStoredList();
+    }
+
+    private static void RefreshViewInGameList()
+    {
+        FillSaveDataList(Config.Thief2Path, InGameSaveDataList);
+        View.RefreshInGameSavesList(InGameSaveDataList);
+    }
+
+    private static void RefreshViewStoredList()
+    {
+        FillSaveDataList(Paths.SaveStore, StoredSaveDataList);
+        View.RefreshSaveStoreList(StoredSaveDataList);
     }
 
     [GeneratedRegex(@"^game[0-9]{4}\.sav$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
