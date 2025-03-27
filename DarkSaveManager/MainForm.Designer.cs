@@ -35,6 +35,7 @@ sealed partial class MainForm
         CopyToStoreButton = new Button();
         StoredSavesLabel = new Label();
         InGameSavesLabel = new Label();
+        Test2Button = new Button();
         SuspendLayout();
         // 
         // Test1Button
@@ -99,6 +100,16 @@ sealed partial class MainForm
         InGameSavesLabel.TabIndex = 3;
         InGameSavesLabel.Text = "In-game saves:";
         // 
+        // Test2Button
+        // 
+        Test2Button.Location = new Point(792, 32);
+        Test2Button.Name = "Test2Button";
+        Test2Button.Size = new Size(75, 23);
+        Test2Button.TabIndex = 0;
+        Test2Button.Text = "Test2";
+        Test2Button.UseVisualStyleBackColor = true;
+        Test2Button.Click += Test2Button_Click;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -110,6 +121,7 @@ sealed partial class MainForm
         Controls.Add(MoveToStoreButton);
         Controls.Add(SwappedOutSavesTreeView);
         Controls.Add(InGameSavesTreeView);
+        Controls.Add(Test2Button);
         Controls.Add(Test1Button);
         Name = "MainForm";
         Text = "Dark Save Manager";
@@ -128,4 +140,5 @@ sealed partial class MainForm
     private Button CopyToStoreButton;
     private Label StoredSavesLabel;
     private Label InGameSavesLabel;
+    private Button Test2Button;
 }
