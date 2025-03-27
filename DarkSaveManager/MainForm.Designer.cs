@@ -33,6 +33,8 @@ sealed partial class MainForm
         SwappedOutSavesTreeView = new TreeView();
         MoveToStoreButton = new Button();
         CopyToStoreButton = new Button();
+        StoredSavesLabel = new Label();
+        InGameSavesLabel = new Label();
         SuspendLayout();
         // 
         // Test1Button
@@ -79,11 +81,31 @@ sealed partial class MainForm
         CopyToStoreButton.UseVisualStyleBackColor = true;
         CopyToStoreButton.Click += CopyToStoreButton_Click;
         // 
+        // StoredSavesLabel
+        // 
+        StoredSavesLabel.AutoSize = true;
+        StoredSavesLabel.Location = new Point(56, 80);
+        StoredSavesLabel.Name = "StoredSavesLabel";
+        StoredSavesLabel.Size = new Size(75, 15);
+        StoredSavesLabel.TabIndex = 3;
+        StoredSavesLabel.Text = "Stored saves:";
+        // 
+        // InGameSavesLabel
+        // 
+        InGameSavesLabel.AutoSize = true;
+        InGameSavesLabel.Location = new Point(512, 80);
+        InGameSavesLabel.Name = "InGameSavesLabel";
+        InGameSavesLabel.Size = new Size(86, 15);
+        InGameSavesLabel.TabIndex = 3;
+        InGameSavesLabel.Text = "In-game saves:";
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(881, 771);
+        Controls.Add(InGameSavesLabel);
+        Controls.Add(StoredSavesLabel);
         Controls.Add(CopyToStoreButton);
         Controls.Add(MoveToStoreButton);
         Controls.Add(SwappedOutSavesTreeView);
@@ -94,6 +116,7 @@ sealed partial class MainForm
         FormClosing += MainForm_FormClosing;
         FormClosed += MainForm_FormClosed;
         ResumeLayout(false);
+        PerformLayout();
     }
 
     #endregion
@@ -103,4 +126,6 @@ sealed partial class MainForm
     private TreeView SwappedOutSavesTreeView;
     private Button MoveToStoreButton;
     private Button CopyToStoreButton;
+    private Label StoredSavesLabel;
+    private Label InGameSavesLabel;
 }
