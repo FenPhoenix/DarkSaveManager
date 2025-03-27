@@ -204,6 +204,21 @@ internal static partial class Core
         return false;
     }
 
+    // TODO: Figure out how we want to do this - we want it different than this, but what
+    private static string GetFinalStoredSaveName(SaveData saveData)
+    {
+        string originalDest = Path.Combine(Paths.SaveStore, saveData.FileName);
+        string finalDest = originalDest;
+        int i = 1;
+        while (File.Exists(finalDest) && i < int.MaxValue)
+        {
+            finalDest = originalDest + "_" + i.ToStrInv();
+            i++;
+        }
+
+        return finalDest;
+    }
+
     // TODO: Handle errors and if it already exists
     internal static void CopySelectedToStore()
     {
@@ -219,7 +234,8 @@ internal static partial class Core
 
                 // TODO: Validate
                 SaveData saveData = InGameSaveDataList[index];
-                File.Copy(saveData.FullPath, Path.Combine(Paths.SaveStore, saveData.FileName));
+                string finalDest = GetFinalStoredSaveName(saveData);
+                File.Copy(saveData.FullPath, finalDest);
             }
             finally
             {
@@ -246,7 +262,8 @@ internal static partial class Core
 
                 // TODO: Validate
                 SaveData saveData = InGameSaveDataList[index];
-                File.Move(saveData.FullPath, Path.Combine(Paths.SaveStore, saveData.FileName));
+                string finalDest = GetFinalStoredSaveName(saveData);
+                File.Move(saveData.FullPath, finalDest);
             }
             finally
             {
