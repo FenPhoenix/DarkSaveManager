@@ -85,7 +85,7 @@ sealed partial class MainForm
         // StoredSavesLabel
         // 
         StoredSavesLabel.AutoSize = true;
-        StoredSavesLabel.Location = new Point(56, 80);
+        StoredSavesLabel.Location = new Point(512, 80);
         StoredSavesLabel.Name = "StoredSavesLabel";
         StoredSavesLabel.Size = new Size(75, 15);
         StoredSavesLabel.TabIndex = 3;
@@ -94,7 +94,7 @@ sealed partial class MainForm
         // InGameSavesLabel
         // 
         InGameSavesLabel.AutoSize = true;
-        InGameSavesLabel.Location = new Point(512, 80);
+        InGameSavesLabel.Location = new Point(56, 80);
         InGameSavesLabel.Name = "InGameSavesLabel";
         InGameSavesLabel.Size = new Size(86, 15);
         InGameSavesLabel.TabIndex = 3;
