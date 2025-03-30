@@ -126,4 +126,18 @@ public sealed partial class MainForm : Form
             e.CancelEdit = true;
         }
     }
+
+    private void InGameSavesTreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+    {
+        if (e.CancelEdit || e.Label == null)
+        {
+            e.CancelEdit = true;
+            return;
+        }
+
+        if (!Core.RenameGameSave(e.Label))
+        {
+            e.CancelEdit = true;
+        }
+    }
 }

@@ -52,6 +52,7 @@ sealed partial class MainForm
         // InGameSavesTreeView
         // 
         InGameSavesTreeView.FullRowSelect = true;
+        InGameSavesTreeView.LabelEdit = true;
         InGameSavesTreeView.Location = new Point(504, 96);
         InGameSavesTreeView.Name = "InGameSavesTreeView";
         InGameSavesTreeView.ShowLines = false;
@@ -59,6 +60,7 @@ sealed partial class MainForm
         InGameSavesTreeView.ShowRootLines = false;
         InGameSavesTreeView.Size = new Size(248, 464);
         InGameSavesTreeView.TabIndex = 1;
+        InGameSavesTreeView.AfterLabelEdit += InGameSavesTreeView_AfterLabelEdit;
         // 
         // StoredSavesTreeView
         // 

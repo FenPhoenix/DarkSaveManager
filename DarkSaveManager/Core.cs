@@ -321,6 +321,7 @@ internal static partial class Core
         View.RefreshSaveStoreList(StoredSaveDataList);
     }
 
+    // TODO: Dedupe
     internal static bool RenameStoredSave(string newName)
     {
         if (ContainsInvalidFriendlySaveNameChars(newName))
@@ -331,38 +332,72 @@ internal static partial class Core
         // TODO: ASCII encoding for now, until we figure out how to convert to OEM which the game needs
         byte[] newNameBytes = Encoding.ASCII.GetBytes(newName);
 
-        if (newNameBytes.Length <= MaxFriendlySaveNameLength && View.TryGetSelectedStoredSaveIndex(out int index))
-        {
-            using (new DisableWatchers())
-            {
-                SaveData saveData = StoredSaveDataList[index];
-                try
-                {
-                    bool seekSuccess;
-                    long friendlySaveNamePosition;
-                    using (FileStream fs = File.OpenRead(saveData.FullPath))
-                    {
-                        seekSuccess = TrySeekToFriendlySaveName(fs, out friendlySaveNamePosition);
-                    }
-
-                    if (!seekSuccess) return false;
-
-                    using SafeFileHandle handle = File.OpenHandle(saveData.FullPath, FileMode.Open, FileAccess.Write);
-                    RandomAccess.Write(handle, newNameBytes, friendlySaveNamePosition);
-
-                    return true;
-
-                }
-                // TODO: Report exception
-                catch
-                {
-                    return false;
-                }
-            }
-        }
-        else
+        if (newNameBytes.Length > MaxFriendlySaveNameLength)
         {
             return false;
+        }
+
+        if (!View.TryGetSelectedStoredSaveIndex(out int index))
+        {
+            return false;
+        }
+
+        SaveData saveData = StoredSaveDataList[index];
+
+        return RenameSave(saveData, newNameBytes);
+    }
+
+    // TODO: Dedupe
+    internal static bool RenameGameSave(string newName)
+    {
+        if (ContainsInvalidFriendlySaveNameChars(newName))
+        {
+            return false;
+        }
+
+        // TODO: ASCII encoding for now, until we figure out how to convert to OEM which the game needs
+        byte[] newNameBytes = Encoding.ASCII.GetBytes(newName);
+
+        if (newNameBytes.Length > MaxFriendlySaveNameLength)
+        {
+            return false;
+        }
+
+        if (!View.TryGetSelectedInGameSaveIndex(out int index))
+        {
+            return false;
+        }
+
+        SaveData saveData = InGameSaveDataList[index];
+
+        return RenameSave(saveData, newNameBytes);
+    }
+
+    private static bool RenameSave(SaveData saveData, byte[] newNameBytes)
+    {
+        using (new DisableWatchers())
+        {
+            try
+            {
+                bool seekSuccess;
+                long friendlySaveNamePosition;
+                using (FileStream fs = File.OpenRead(saveData.FullPath))
+                {
+                    seekSuccess = TrySeekToFriendlySaveName(fs, out friendlySaveNamePosition);
+                }
+
+                if (!seekSuccess) return false;
+
+                using SafeFileHandle handle = File.OpenHandle(saveData.FullPath, FileMode.Open, FileAccess.Write);
+                RandomAccess.Write(handle, newNameBytes, friendlySaveNamePosition);
+
+                return true;
+            }
+            // TODO: Report exception
+            catch
+            {
+                return false;
+            }
         }
     }
 
