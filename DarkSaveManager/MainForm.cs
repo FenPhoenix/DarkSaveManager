@@ -35,14 +35,7 @@ public sealed partial class MainForm : Form
             treeView.Nodes.Clear();
             foreach (SaveData saveData in saveDataList)
             {
-                if (stored)
-                {
-                    treeView.Nodes.Add(saveData.FriendlySaveName);
-                }
-                else
-                {
-                    treeView.Nodes.Add((saveData.Index + 1).ToStrInv() + ": " + saveData.FriendlySaveName);
-                }
+                treeView.Nodes.Add(saveData.FriendlySaveName);
             }
         }
         finally
