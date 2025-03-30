@@ -1,4 +1,7 @@
-﻿using System.Buffers;
+﻿// TODO: Game save UI list should display all slots always, and empty ones should be empty or "---" or whatever.
+//  This will allow dragging and dropping stored saves onto arbitrary game save slots.
+
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
