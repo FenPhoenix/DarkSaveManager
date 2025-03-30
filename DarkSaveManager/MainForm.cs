@@ -11,16 +11,6 @@ public sealed partial class MainForm : Form
 
     private void Test1Button_Click(object sender, EventArgs e)
     {
-        Core.FillSaveDataList(Config.Thief2Path, Core.InGameSaveDataList, stored: false);
-        foreach (SaveData saveData in Core.InGameSaveDataList)
-        {
-            Trace.WriteLine("SAVE ITEM:");
-            Trace.WriteLine("----------");
-            Trace.WriteLine(saveData.FileName);
-            Trace.WriteLine(saveData.FriendlySaveName);
-            Trace.WriteLine("");
-            Trace.WriteLine("");
-        }
     }
 
     private void Test2Button_Click(object sender, EventArgs e)
