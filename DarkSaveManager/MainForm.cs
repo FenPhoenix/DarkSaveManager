@@ -35,7 +35,7 @@ public sealed partial class MainForm : Form
             treeView.Nodes.Clear();
             foreach (SaveData saveData in saveDataList)
             {
-                treeView.Nodes.Add(saveData.SaveName);
+                treeView.Nodes.Add((saveData.Index + 1).ToStrInv() + ": " + saveData.SaveName);
             }
         }
         finally
@@ -71,6 +71,11 @@ public sealed partial class MainForm : Form
     private void MoveToStoreButton_Click(object sender, EventArgs e)
     {
         Core.MoveSelectedToStore();
+    }
+
+    private void SwapToGameButton_Click(object sender, EventArgs e)
+    {
+        Core.SwapSaveToGame();
     }
 
     internal bool TryGetSelectedInGameSaveIndex(out int index)

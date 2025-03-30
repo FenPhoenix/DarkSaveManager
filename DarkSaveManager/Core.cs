@@ -20,6 +20,7 @@ internal static partial class Core
     internal static void Init()
     {
         Directory.CreateDirectory(Paths.SaveStore);
+        Directory.CreateDirectory(Paths.Temp);
 
         Thief2Watcher.Path = Config.Thief2Path;
         Thief2Watcher.Filter = "*.sav";
@@ -228,25 +229,14 @@ internal static partial class Core
     {
         if (View.TryGetSelectedInGameSaveIndex(out int index))
         {
-            bool oldGameEventWatchingValue = Thief2Watcher.EnableRaisingEvents;
-            bool oldStoreEventWatchingValue = SaveStoreWatcher.EnableRaisingEvents;
-
-            try
+            using (new DisableWatchers())
             {
-                Thief2Watcher.EnableRaisingEvents = false;
-                SaveStoreWatcher.EnableRaisingEvents = false;
-
                 // TODO: Validate
                 SaveData saveData = InGameSaveDataList[index];
                 string finalDest = GetFinalStoredSaveName(saveData);
                 File.Copy(saveData.FullPath, finalDest);
-            }
-            finally
-            {
-                RefreshViewAllLists();
 
-                SaveStoreWatcher.EnableRaisingEvents = oldStoreEventWatchingValue;
-                Thief2Watcher.EnableRaisingEvents = oldGameEventWatchingValue;
+                RefreshViewAllLists();
             }
         }
     }
@@ -256,25 +246,57 @@ internal static partial class Core
     {
         if (View.TryGetSelectedInGameSaveIndex(out int index))
         {
-            bool oldGameEventWatchingValue = Thief2Watcher.EnableRaisingEvents;
-            bool oldStoreEventWatchingValue = SaveStoreWatcher.EnableRaisingEvents;
-
-            try
+            using (new DisableWatchers())
             {
-                Thief2Watcher.EnableRaisingEvents = false;
-                SaveStoreWatcher.EnableRaisingEvents = false;
-
                 // TODO: Validate
                 SaveData saveData = InGameSaveDataList[index];
                 string finalDest = GetFinalStoredSaveName(saveData);
                 File.Move(saveData.FullPath, finalDest);
-            }
-            finally
-            {
-                RefreshViewAllLists();
 
-                SaveStoreWatcher.EnableRaisingEvents = oldStoreEventWatchingValue;
-                Thief2Watcher.EnableRaisingEvents = oldGameEventWatchingValue;
+                RefreshViewAllLists();
+            }
+        }
+    }
+
+    // TODO: Handle errors and if it already exists
+    internal static void MoveToStore(SaveData saveData)
+    {
+        using (new DisableWatchers())
+        {
+            // TODO: Validate
+            string finalDest = GetFinalStoredSaveName(saveData);
+            File.Move(saveData.FullPath, finalDest);
+
+            RefreshViewAllLists();
+        }
+    }
+
+    // TODO: Allow swapping to any save slot - we'll rename the incoming file to match its dest slot number
+    // TODO: Allow dragging and dropping too. That's kind of needed for decent any-slot-swap UX.
+
+    internal static void SwapSaveToGame()
+    {
+        if (View.TryGetSelectedStoredSaveIndex(out int index))
+        {
+            using (new DisableWatchers())
+            {
+                // TODO: Validate
+                SaveData storedSaveData = StoredSaveDataList[index];
+                string tempDest = Path.Combine(Paths.Temp, storedSaveData.FileName.Substring(0, storedSaveData.FileName.LastIndexOf('_')));
+
+                // TODO: Overwrite or notify or?
+                File.Move(storedSaveData.FullPath, tempDest, overwrite: true);
+
+                SaveData? gameSaveData = InGameSaveDataList.Find(x => x.FileName.EqualsI(Path.GetFileName(tempDest)));
+                if (gameSaveData != null)
+                {
+                    MoveToStore(gameSaveData);
+                }
+
+                string gameDest = Path.Combine(Config.Thief2Path, Path.GetFileName(tempDest));
+                File.Move(tempDest, gameDest);
+
+                RefreshViewAllLists();
             }
         }
     }
@@ -303,5 +325,43 @@ internal static partial class Core
     internal static void Shutdown()
     {
         Application.Exit();
+    }
+
+    private sealed class DisableWatchers : IDisposable
+    {
+        private static readonly Lock _lock = new();
+        private static int _count;
+
+        private readonly bool oldGameEventWatchingValue;
+        private readonly bool oldStoreEventWatchingValue;
+
+        public DisableWatchers()
+        {
+            lock (_lock)
+            {
+                if (_count == 0)
+                {
+                    oldGameEventWatchingValue = Thief2Watcher.EnableRaisingEvents;
+                    oldStoreEventWatchingValue = SaveStoreWatcher.EnableRaisingEvents;
+
+                    Thief2Watcher.EnableRaisingEvents = false;
+                    SaveStoreWatcher.EnableRaisingEvents = false;
+                }
+                _count++;
+            }
+        }
+
+        public void Dispose()
+        {
+            lock (_lock)
+            {
+                if (_count == 1)
+                {
+                    Thief2Watcher.EnableRaisingEvents = oldGameEventWatchingValue;
+                    SaveStoreWatcher.EnableRaisingEvents = oldStoreEventWatchingValue;
+                }
+                _count--;
+            }
+        }
     }
 }

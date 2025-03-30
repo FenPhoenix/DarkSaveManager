@@ -36,6 +36,7 @@ sealed partial class MainForm
         StoredSavesLabel = new Label();
         InGameSavesLabel = new Label();
         Test2Button = new Button();
+        SwapToGameButton = new Button();
         SuspendLayout();
         // 
         // Test1Button
@@ -110,6 +111,16 @@ sealed partial class MainForm
         Test2Button.UseVisualStyleBackColor = true;
         Test2Button.Click += Test2Button_Click;
         // 
+        // SwapToGameButton
+        // 
+        SwapToGameButton.Location = new Point(368, 272);
+        SwapToGameButton.Name = "SwapToGameButton";
+        SwapToGameButton.Size = new Size(75, 23);
+        SwapToGameButton.TabIndex = 2;
+        SwapToGameButton.Text = "Swap ->";
+        SwapToGameButton.UseVisualStyleBackColor = true;
+        SwapToGameButton.Click += SwapToGameButton_Click;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -118,6 +129,7 @@ sealed partial class MainForm
         Controls.Add(InGameSavesLabel);
         Controls.Add(StoredSavesLabel);
         Controls.Add(CopyToStoreButton);
+        Controls.Add(SwapToGameButton);
         Controls.Add(MoveToStoreButton);
         Controls.Add(SwappedOutSavesTreeView);
         Controls.Add(InGameSavesTreeView);
@@ -141,4 +153,5 @@ sealed partial class MainForm
     private Label StoredSavesLabel;
     private Label InGameSavesLabel;
     private Button Test2Button;
+    private Button SwapToGameButton;
 }
