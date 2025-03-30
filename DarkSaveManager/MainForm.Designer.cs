@@ -61,6 +61,7 @@ sealed partial class MainForm
         InGameSavesTreeView.Size = new Size(248, 464);
         InGameSavesTreeView.TabIndex = 1;
         InGameSavesTreeView.AfterLabelEdit += InGameSavesTreeView_AfterLabelEdit;
+        InGameSavesTreeView.KeyDown += TreeView_KeyDown;
         // 
         // StoredSavesTreeView
         // 
@@ -74,6 +75,7 @@ sealed partial class MainForm
         StoredSavesTreeView.Size = new Size(248, 464);
         StoredSavesTreeView.TabIndex = 1;
         StoredSavesTreeView.AfterLabelEdit += StoredSavesTreeView_AfterLabelEdit;
+        StoredSavesTreeView.KeyDown += TreeView_KeyDown;
         // 
         // MoveToStoreButton
         // 

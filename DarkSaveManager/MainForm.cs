@@ -140,4 +140,14 @@ public sealed partial class MainForm : Form
             e.CancelEdit = true;
         }
     }
+
+    private void TreeView_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (sender is not TreeView treeView) return;
+
+        if (e.KeyCode == Keys.F2 && treeView.SelectedNode != null)
+        {
+            treeView.SelectedNode.BeginEdit();
+        }
+    }
 }
