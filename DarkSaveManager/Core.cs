@@ -68,13 +68,6 @@ internal static partial class Core
         const string pattern = "*.sav_*";
 
         string[] saveFiles = Directory.GetFiles(savePath, pattern);
-        if (AnyInvalidlyNamedSaveFiles(saveFiles))
-        {
-            // TODO: We should just ignore invalidly named saves instead of disallowing them, this is just for
-            //  debug
-            throw new InvalidDataException("*** At least one invalidly named save file found");
-        }
-
         foreach (string saveFile in saveFiles)
         {
             if (TryGetSaveData(saveFile, out SaveData? saveData))
@@ -91,13 +84,6 @@ internal static partial class Core
         const string pattern = "*.sav";
 
         string[] saveFiles = Directory.GetFiles(savePath, pattern);
-        if (AnyInvalidlyNamedSaveFiles(saveFiles))
-        {
-            // TODO: We should just ignore invalidly named saves instead of disallowing them, this is just for
-            //  debug
-            throw new InvalidDataException("*** At least one invalidly named save file found");
-        }
-
         foreach (string saveFile in saveFiles)
         {
             if (TryGetSaveData(saveFile, out SaveData? saveData))
@@ -105,21 +91,6 @@ internal static partial class Core
                 saveDataList[saveData.Index] = saveData;
             }
         }
-    }
-
-    private static bool AnyInvalidlyNamedSaveFiles(string[] saveFiles)
-    {
-        foreach (string saveFile in saveFiles)
-        {
-            string fileName = Path.GetFileName(saveFile);
-            if (!NumberedSaveGameNameRegex().Match(fileName).Success &&
-                !fileName.Equals("quick.sav"))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private static bool TryGetSaveData(string fullPath, [NotNullWhen(true)] out SaveData? saveData)
@@ -167,17 +138,21 @@ internal static partial class Core
 
     private static bool TryGetGameSaveIndex(string fileNameOnly, out ushort index)
     {
-        if (fileNameOnly.EqualsI("quick.sav"))
+        if (fileNameOnly.StartsWithI("quick.sav"))
         {
-            index = HighestSaveGameIndex;
+            index = QuickSaveIndex;
             return true;
         }
-        else if (ushort.TryParse(fileNameOnly.AsSpan(4, 4), NumberStyles.None, NumberFormatInfo.InvariantInfo, out index) &&
-                 index <= SaveSlotCount)
+        else if (fileNameOnly.Length >= 12 &&
+                 fileNameOnly.StartsWithI("game") &&
+                 fileNameOnly[8] == '.' &&
+                 ushort.TryParse(fileNameOnly.AsSpan(4, 4), NumberStyles.None, NumberFormatInfo.InvariantInfo, out index) &&
+                 index < QuickSaveIndex)
         {
             return true;
         }
 
+        index = 0;
         return false;
     }
 
