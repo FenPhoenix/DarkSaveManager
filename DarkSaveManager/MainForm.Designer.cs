@@ -61,6 +61,7 @@ sealed partial class MainForm
         InGameSavesTreeView.Size = new Size(248, 464);
         InGameSavesTreeView.TabIndex = 1;
         InGameSavesTreeView.AfterLabelEdit += InGameSavesTreeView_AfterLabelEdit;
+        InGameSavesTreeView.AfterSelect += InGameSavesTreeView_AfterSelect;
         InGameSavesTreeView.KeyDown += TreeView_KeyDown;
         // 
         // StoredSavesTreeView
@@ -79,6 +80,7 @@ sealed partial class MainForm
         // 
         // MoveToStoreButton
         // 
+        MoveToStoreButton.Enabled = false;
         MoveToStoreButton.Location = new Point(368, 240);
         MoveToStoreButton.Name = "MoveToStoreButton";
         MoveToStoreButton.Size = new Size(75, 23);
@@ -89,6 +91,7 @@ sealed partial class MainForm
         // 
         // CopyToStoreButton
         // 
+        CopyToStoreButton.Enabled = false;
         CopyToStoreButton.Location = new Point(368, 216);
         CopyToStoreButton.Name = "CopyToStoreButton";
         CopyToStoreButton.Size = new Size(75, 23);

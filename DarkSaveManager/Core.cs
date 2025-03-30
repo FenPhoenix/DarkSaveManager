@@ -1,7 +1,4 @@
-﻿// TODO: Game save UI list should display all slots always, and empty ones should be empty or "---" or whatever.
-//  This will allow dragging and dropping stored saves onto arbitrary game save slots.
-
-using System.Buffers;
+﻿using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
@@ -14,7 +11,7 @@ internal static partial class Core
 {
     internal static MainForm View = null!;
 
-    internal static readonly List<SaveData> InGameSaveDataList = new();
+    internal static readonly SaveData?[] InGameSaveDataList = new SaveData?[SaveSlotCount];
     internal static readonly List<SaveData> StoredSaveDataList = new();
 
     // TODO: Implement list of them, one for each game path
@@ -64,11 +61,11 @@ internal static partial class Core
         View.Invoke(RefreshViewStoredList);
     }
 
-    internal static void FillSaveDataList(string savePath, List<SaveData> saveDataList, bool stored)
+    internal static void FillStoredSaveDataList(string savePath, List<SaveData> saveDataList)
     {
         saveDataList.Clear();
 
-        string pattern = stored ? "*.sav_*" : "*.sav";
+        const string pattern = "*.sav_*";
 
         string[] saveFiles = Directory.GetFiles(savePath, pattern);
         if (AnyInvalidlyNamedSaveFiles(saveFiles))
@@ -83,6 +80,29 @@ internal static partial class Core
             if (TryGetSaveData(saveFile, out SaveData? saveData))
             {
                 saveDataList.Add(saveData);
+            }
+        }
+    }
+
+    internal static void FillGameSaveDataList(string savePath, SaveData?[] saveDataList)
+    {
+        Array.Clear(saveDataList);
+
+        const string pattern = "*.sav";
+
+        string[] saveFiles = Directory.GetFiles(savePath, pattern);
+        if (AnyInvalidlyNamedSaveFiles(saveFiles))
+        {
+            // TODO: We should just ignore invalidly named saves instead of disallowing them, this is just for
+            //  debug
+            throw new InvalidDataException("*** At least one invalidly named save file found");
+        }
+
+        foreach (string saveFile in saveFiles)
+        {
+            if (TryGetSaveData(saveFile, out SaveData? saveData))
+            {
+                saveDataList[saveData.Index] = saveData;
             }
         }
     }
@@ -152,7 +172,8 @@ internal static partial class Core
             index = HighestSaveGameIndex;
             return true;
         }
-        else if (ushort.TryParse(fileNameOnly.AsSpan(4, 4), NumberStyles.None, NumberFormatInfo.InvariantInfo, out index))
+        else if (ushort.TryParse(fileNameOnly.AsSpan(4, 4), NumberStyles.None, NumberFormatInfo.InvariantInfo, out index) &&
+                 index <= SaveSlotCount)
         {
             return true;
         }
@@ -292,7 +313,7 @@ internal static partial class Core
                 // TODO: Overwrite or notify or?
                 File.Move(storedSaveData.FullPath, tempDest, overwrite: true);
 
-                SaveData? gameSaveData = InGameSaveDataList.Find(x => x.FileName.EqualsI(Path.GetFileName(tempDest)));
+                SaveData? gameSaveData = Array.Find(InGameSaveDataList, x => x?.FileName.EqualsI(Path.GetFileName(tempDest)) == true);
                 if (gameSaveData != null)
                 {
                     MoveToStore(gameSaveData);
@@ -314,13 +335,13 @@ internal static partial class Core
 
     private static void RefreshViewInGameList()
     {
-        FillSaveDataList(Config.Thief2Path, InGameSaveDataList, stored: false);
+        FillGameSaveDataList(Config.Thief2Path, InGameSaveDataList);
         View.RefreshInGameSavesList(InGameSaveDataList);
     }
 
     private static void RefreshViewStoredList()
     {
-        FillSaveDataList(Paths.SaveStore, StoredSaveDataList, stored: true);
+        FillStoredSaveDataList(Paths.SaveStore, StoredSaveDataList);
         View.RefreshSaveStoreList(StoredSaveDataList);
     }
 
@@ -371,15 +392,27 @@ internal static partial class Core
             return false;
         }
 
-        SaveData saveData = InGameSaveDataList[index];
+        SaveData? saveData = InGameSaveDataList[index];
+        if (saveData == null)
+        {
+            return false;
+        }
 
         return RenameSave(saveData, newNameBytes);
     }
 
-    private static bool RenameSave(SaveData saveData, byte[] newNameBytes)
+    private static bool RenameSave(SaveData saveData, byte[] newNameBytes_)
     {
         using (new DisableWatchers())
         {
+            /*
+            Must use a full-name-section-length array with the new name at the start and all the rest of the 
+            bytes zero. Otherwise shorter names will still leave whatever was in there after their length (so
+            "Cargo 0:00:00" -> "Cargo" becomes "Cargo 0:00:00" in the file still).
+            */
+            byte[] nameBytesFull = new byte[MaxFriendlySaveNameLength];
+            Array.Copy(newNameBytes_, nameBytesFull, newNameBytes_.Length);
+
             try
             {
                 bool seekSuccess;
@@ -392,7 +425,7 @@ internal static partial class Core
                 if (!seekSuccess) return false;
 
                 using SafeFileHandle handle = File.OpenHandle(saveData.FullPath, FileMode.Open, FileAccess.Write);
-                RandomAccess.Write(handle, newNameBytes, friendlySaveNamePosition);
+                RandomAccess.Write(handle, nameBytesFull, friendlySaveNamePosition);
 
                 return true;
             }
@@ -417,6 +450,18 @@ internal static partial class Core
                 return true;
             }
         }
+        return false;
+    }
+
+    internal static bool TryGetSaveDataForSelectedGameSave([NotNullWhen(true)] out SaveData? saveData)
+    {
+        if (View.TryGetSelectedInGameSaveIndex(out int index))
+        {
+            saveData = InGameSaveDataList[index];
+            return saveData != null;
+        }
+
+        saveData = null;
         return false;
     }
 

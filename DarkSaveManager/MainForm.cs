@@ -15,31 +15,38 @@ public sealed partial class MainForm : Form
     {
     }
 
-    private static void RefreshList(TreeView treeView, List<SaveData> saveDataList, bool stored)
+    internal void RefreshInGameSavesList(SaveData?[] saveDataList)
     {
         try
         {
-            treeView.BeginUpdate();
-            treeView.Nodes.Clear();
-            foreach (SaveData saveData in saveDataList)
+            InGameSavesTreeView.BeginUpdate();
+            InGameSavesTreeView.Nodes.Clear();
+            foreach (SaveData? saveData in saveDataList)
             {
-                treeView.Nodes.Add(saveData.FriendlySaveName);
+                InGameSavesTreeView.Nodes.Add(saveData != null ? saveData.FriendlySaveName : "< EMPTY >");
             }
         }
         finally
         {
-            treeView.EndUpdate();
+            InGameSavesTreeView.EndUpdate();
         }
-    }
-
-    internal void RefreshInGameSavesList(List<SaveData> saveDataList)
-    {
-        RefreshList(InGameSavesTreeView, saveDataList, stored: false);
     }
 
     internal void RefreshSaveStoreList(List<SaveData> saveDataList)
     {
-        RefreshList(StoredSavesTreeView, saveDataList, stored: true);
+        try
+        {
+            StoredSavesTreeView.BeginUpdate();
+            StoredSavesTreeView.Nodes.Clear();
+            foreach (SaveData saveData in saveDataList)
+            {
+                StoredSavesTreeView.Nodes.Add(saveData.FriendlySaveName);
+            }
+        }
+        finally
+        {
+            StoredSavesTreeView.EndUpdate();
+        }
     }
 
     private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -129,6 +136,20 @@ public sealed partial class MainForm : Form
         if (e.KeyCode == Keys.F2 && treeView.SelectedNode != null)
         {
             treeView.SelectedNode.BeginEdit();
+        }
+    }
+
+    private void InGameSavesTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+    {
+        if (Core.TryGetSaveDataForSelectedGameSave(out SaveData? saveData))
+        {
+            CopyToStoreButton.Enabled = true;
+            MoveToStoreButton.Enabled = true;
+        }
+        else
+        {
+            CopyToStoreButton.Enabled = false;
+            MoveToStoreButton.Enabled = false;
         }
     }
 }
