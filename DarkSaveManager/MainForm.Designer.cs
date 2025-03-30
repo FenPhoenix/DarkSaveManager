@@ -50,14 +50,14 @@ sealed partial class MainForm
         // 
         // InGameSavesTreeView
         // 
-        InGameSavesTreeView.Location = new Point(56, 96);
+        InGameSavesTreeView.Location = new Point(504, 96);
         InGameSavesTreeView.Name = "InGameSavesTreeView";
         InGameSavesTreeView.Size = new Size(248, 464);
         InGameSavesTreeView.TabIndex = 1;
         // 
         // SwappedOutSavesTreeView
         // 
-        SwappedOutSavesTreeView.Location = new Point(512, 96);
+        SwappedOutSavesTreeView.Location = new Point(56, 96);
         SwappedOutSavesTreeView.Name = "SwappedOutSavesTreeView";
         SwappedOutSavesTreeView.Size = new Size(248, 464);
         SwappedOutSavesTreeView.TabIndex = 1;
@@ -68,7 +68,7 @@ sealed partial class MainForm
         MoveToStoreButton.Name = "MoveToStoreButton";
         MoveToStoreButton.Size = new Size(75, 23);
         MoveToStoreButton.TabIndex = 2;
-        MoveToStoreButton.Text = "Move ->";
+        MoveToStoreButton.Text = "<- Move";
         MoveToStoreButton.UseVisualStyleBackColor = true;
         MoveToStoreButton.Click += MoveToStoreButton_Click;
         // 
@@ -78,14 +78,14 @@ sealed partial class MainForm
         CopyToStoreButton.Name = "CopyToStoreButton";
         CopyToStoreButton.Size = new Size(75, 23);
         CopyToStoreButton.TabIndex = 2;
-        CopyToStoreButton.Text = "Copy ->";
+        CopyToStoreButton.Text = "<- Copy";
         CopyToStoreButton.UseVisualStyleBackColor = true;
         CopyToStoreButton.Click += CopyToStoreButton_Click;
         // 
         // StoredSavesLabel
         // 
         StoredSavesLabel.AutoSize = true;
-        StoredSavesLabel.Location = new Point(512, 80);
+        StoredSavesLabel.Location = new Point(56, 80);
         StoredSavesLabel.Name = "StoredSavesLabel";
         StoredSavesLabel.Size = new Size(75, 15);
         StoredSavesLabel.TabIndex = 3;
@@ -94,7 +94,7 @@ sealed partial class MainForm
         // InGameSavesLabel
         // 
         InGameSavesLabel.AutoSize = true;
-        InGameSavesLabel.Location = new Point(56, 80);
+        InGameSavesLabel.Location = new Point(504, 80);
         InGameSavesLabel.Name = "InGameSavesLabel";
         InGameSavesLabel.Size = new Size(86, 15);
         InGameSavesLabel.TabIndex = 3;
