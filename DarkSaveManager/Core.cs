@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Win32.SafeHandles;
 
 namespace DarkSaveManager;
 
@@ -106,21 +107,19 @@ internal static partial class Core
         {
             using FileStream stream = File.OpenRead(fullPath);
 
-            if (!TrySeekToSaveName(stream)) return false;
+            if (!TrySeekToFriendlySaveName(stream, out _)) return false;
 
-            const int maxNameLength = 1024;
-
-            byte[] nameBuffer = ArrayPool<byte>.Shared.Rent(maxNameLength);
+            byte[] nameBuffer = ArrayPool<byte>.Shared.Rent(MaxFriendlySaveNameLength);
             try
             {
-                stream.ReadExactly(nameBuffer, 0, maxNameLength);
+                stream.ReadExactly(nameBuffer, 0, MaxFriendlySaveNameLength);
 
-                int nameEndIndex = Array.IndexOf<byte>(nameBuffer, 0, maxNameLength);
-                int nameLength = nameEndIndex == -1 ? maxNameLength : nameEndIndex + 1;
+                int nameEndIndex = Array.IndexOf<byte>(nameBuffer, 0, MaxFriendlySaveNameLength);
+                int nameLength = nameEndIndex == -1 ? MaxFriendlySaveNameLength : nameEndIndex + 1;
 
                 // The T2 source code doesn't seem to explicitly do any encoding stuff at all - save names seem
                 // to be read in the OEM codepage (850 in my case): 8B == ï
-                string saveName = Utils.GetOEMCodePageOrFallback(Encoding.UTF8).GetString(nameBuffer, 0, nameLength);
+                string friendlySaveName = Utils.GetOEMCodePageOrFallback(Encoding.UTF8).GetString(nameBuffer, 0, nameLength);
 
                 string fileNameOnly = Path.GetFileName(fullPath);
 
@@ -129,7 +128,7 @@ internal static partial class Core
                     return false;
                 }
 
-                saveData = new SaveData(index, fullPath, fileNameOnly, saveName);
+                saveData = new SaveData(index, fullPath, fileNameOnly, friendlySaveName);
                 return true;
             }
             finally
@@ -158,8 +157,10 @@ internal static partial class Core
         return false;
     }
 
-    private static bool TrySeekToSaveName(Stream stream)
+    private static bool TrySeekToFriendlySaveName(Stream stream, out long friendlySaveNamePosition)
     {
+        friendlySaveNamePosition = 0;
+
         try
         {
             Span<byte> chunkHeaderBuffer = stackalloc byte[12];
@@ -199,6 +200,7 @@ internal static partial class Core
                 }
 
                 stream.Seek(12, SeekOrigin.Current);
+                friendlySaveNamePosition = stream.Position;
                 return true;
             }
         }
@@ -210,7 +212,7 @@ internal static partial class Core
         return false;
     }
 
-    private static string GetFinalStoredSaveName(SaveData saveData)
+    private static string GetFinalStoredSaveFileName(SaveData saveData)
     {
         string originalDest = Path.Combine(Paths.SaveStore, saveData.FileName) + "_1";
         string finalDest = originalDest;
@@ -233,7 +235,7 @@ internal static partial class Core
             {
                 // TODO: Validate
                 SaveData saveData = InGameSaveDataList[index];
-                string finalDest = GetFinalStoredSaveName(saveData);
+                string finalDest = GetFinalStoredSaveFileName(saveData);
                 File.Copy(saveData.FullPath, finalDest);
 
                 RefreshViewAllLists();
@@ -250,7 +252,7 @@ internal static partial class Core
             {
                 // TODO: Validate
                 SaveData saveData = InGameSaveDataList[index];
-                string finalDest = GetFinalStoredSaveName(saveData);
+                string finalDest = GetFinalStoredSaveFileName(saveData);
                 File.Move(saveData.FullPath, finalDest);
 
                 RefreshViewAllLists();
@@ -264,7 +266,7 @@ internal static partial class Core
         using (new DisableWatchers())
         {
             // TODO: Validate
-            string finalDest = GetFinalStoredSaveName(saveData);
+            string finalDest = GetFinalStoredSaveFileName(saveData);
             File.Move(saveData.FullPath, finalDest);
 
             RefreshViewAllLists();
@@ -317,6 +319,67 @@ internal static partial class Core
     {
         FillSaveDataList(Paths.SaveStore, StoredSaveDataList, stored: true);
         View.RefreshSaveStoreList(StoredSaveDataList);
+    }
+
+    internal static bool RenameStoredSave(string newName)
+    {
+        if (ContainsInvalidFriendlySaveNameChars(newName))
+        {
+            return false;
+        }
+
+        // TODO: ASCII encoding for now, until we figure out how to convert to OEM which the game needs
+        byte[] newNameBytes = Encoding.ASCII.GetBytes(newName);
+
+        if (newNameBytes.Length <= MaxFriendlySaveNameLength && View.TryGetSelectedStoredSaveIndex(out int index))
+        {
+            using (new DisableWatchers())
+            {
+                SaveData saveData = StoredSaveDataList[index];
+                try
+                {
+                    bool seekSuccess;
+                    long friendlySaveNamePosition;
+                    using (FileStream fs = File.OpenRead(saveData.FullPath))
+                    {
+                        seekSuccess = TrySeekToFriendlySaveName(fs, out friendlySaveNamePosition);
+                    }
+
+                    if (!seekSuccess) return false;
+
+                    using SafeFileHandle handle = File.OpenHandle(saveData.FullPath, FileMode.Open, FileAccess.Write);
+                    RandomAccess.Write(handle, newNameBytes, friendlySaveNamePosition);
+
+                    return true;
+
+                }
+                // TODO: Report exception
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /*
+    TODO: Only allowing ASCII for now, because we need to convert to OEM code page but the field probably takes
+     ANSI or UTF-16 or something.
+    */
+    internal static bool ContainsInvalidFriendlySaveNameChars(string value)
+    {
+        foreach (char c in value)
+        {
+            if (c < 32 || c >= 127)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     [GeneratedRegex(@"^game[0-9]{4}\.sav(_[0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]

@@ -48,4 +48,13 @@ internal static class Utils
     {
         return value.ToString(null, NumberFormatInfo.CurrentInfo);
     }
+
+    /// <summary>
+    /// Use this to run a function to initialize a field without having to create a standalone function.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="initFunc"></param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T RunFunc<T>(Func<T> initFunc) => initFunc.Invoke();
 }

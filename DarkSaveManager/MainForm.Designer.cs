@@ -30,7 +30,7 @@ sealed partial class MainForm
     {
         Test1Button = new Button();
         InGameSavesTreeView = new TreeView();
-        SwappedOutSavesTreeView = new TreeView();
+        StoredSavesTreeView = new TreeView();
         MoveToStoreButton = new Button();
         CopyToStoreButton = new Button();
         StoredSavesLabel = new Label();
@@ -51,17 +51,27 @@ sealed partial class MainForm
         // 
         // InGameSavesTreeView
         // 
+        InGameSavesTreeView.FullRowSelect = true;
         InGameSavesTreeView.Location = new Point(504, 96);
         InGameSavesTreeView.Name = "InGameSavesTreeView";
+        InGameSavesTreeView.ShowLines = false;
+        InGameSavesTreeView.ShowPlusMinus = false;
+        InGameSavesTreeView.ShowRootLines = false;
         InGameSavesTreeView.Size = new Size(248, 464);
         InGameSavesTreeView.TabIndex = 1;
         // 
-        // SwappedOutSavesTreeView
+        // StoredSavesTreeView
         // 
-        SwappedOutSavesTreeView.Location = new Point(56, 96);
-        SwappedOutSavesTreeView.Name = "SwappedOutSavesTreeView";
-        SwappedOutSavesTreeView.Size = new Size(248, 464);
-        SwappedOutSavesTreeView.TabIndex = 1;
+        StoredSavesTreeView.FullRowSelect = true;
+        StoredSavesTreeView.LabelEdit = true;
+        StoredSavesTreeView.Location = new Point(56, 96);
+        StoredSavesTreeView.Name = "StoredSavesTreeView";
+        StoredSavesTreeView.ShowLines = false;
+        StoredSavesTreeView.ShowPlusMinus = false;
+        StoredSavesTreeView.ShowRootLines = false;
+        StoredSavesTreeView.Size = new Size(248, 464);
+        StoredSavesTreeView.TabIndex = 1;
+        StoredSavesTreeView.AfterLabelEdit += StoredSavesTreeView_AfterLabelEdit;
         // 
         // MoveToStoreButton
         // 
@@ -131,7 +141,7 @@ sealed partial class MainForm
         Controls.Add(CopyToStoreButton);
         Controls.Add(SwapToGameButton);
         Controls.Add(MoveToStoreButton);
-        Controls.Add(SwappedOutSavesTreeView);
+        Controls.Add(StoredSavesTreeView);
         Controls.Add(InGameSavesTreeView);
         Controls.Add(Test2Button);
         Controls.Add(Test1Button);
@@ -147,7 +157,7 @@ sealed partial class MainForm
 
     private Button Test1Button;
     private TreeView InGameSavesTreeView;
-    private TreeView SwappedOutSavesTreeView;
+    private TreeView StoredSavesTreeView;
     private Button MoveToStoreButton;
     private Button CopyToStoreButton;
     private Label StoredSavesLabel;

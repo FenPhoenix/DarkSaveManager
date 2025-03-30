@@ -6,4 +6,6 @@ internal static class Global
 
     // TODO: Is this different for SS2?
     internal const ushort HighestSaveGameIndex = 15;
+
+    internal const int MaxFriendlySaveNameLength = 1024;
 }

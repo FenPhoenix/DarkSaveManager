@@ -17,7 +17,7 @@ public sealed partial class MainForm : Form
             Trace.WriteLine("SAVE ITEM:");
             Trace.WriteLine("----------");
             Trace.WriteLine(saveData.FileName);
-            Trace.WriteLine(saveData.SaveName);
+            Trace.WriteLine(saveData.FriendlySaveName);
             Trace.WriteLine("");
             Trace.WriteLine("");
         }
@@ -27,7 +27,7 @@ public sealed partial class MainForm : Form
     {
     }
 
-    private static void RefreshList(TreeView treeView, List<SaveData> saveDataList)
+    private static void RefreshList(TreeView treeView, List<SaveData> saveDataList, bool stored)
     {
         try
         {
@@ -35,7 +35,14 @@ public sealed partial class MainForm : Form
             treeView.Nodes.Clear();
             foreach (SaveData saveData in saveDataList)
             {
-                treeView.Nodes.Add((saveData.Index + 1).ToStrInv() + ": " + saveData.SaveName);
+                if (stored)
+                {
+                    treeView.Nodes.Add(saveData.FriendlySaveName);
+                }
+                else
+                {
+                    treeView.Nodes.Add((saveData.Index + 1).ToStrInv() + ": " + saveData.FriendlySaveName);
+                }
             }
         }
         finally
@@ -46,12 +53,12 @@ public sealed partial class MainForm : Form
 
     internal void RefreshInGameSavesList(List<SaveData> saveDataList)
     {
-        RefreshList(InGameSavesTreeView, saveDataList);
+        RefreshList(InGameSavesTreeView, saveDataList, stored: false);
     }
 
     internal void RefreshSaveStoreList(List<SaveData> saveDataList)
     {
-        RefreshList(SwappedOutSavesTreeView, saveDataList);
+        RefreshList(StoredSavesTreeView, saveDataList, stored: true);
     }
 
     private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -94,15 +101,29 @@ public sealed partial class MainForm : Form
 
     internal bool TryGetSelectedStoredSaveIndex(out int index)
     {
-        if (SwappedOutSavesTreeView.SelectedNode != null)
+        if (StoredSavesTreeView.SelectedNode != null)
         {
-            index = SwappedOutSavesTreeView.SelectedNode.Index;
+            index = StoredSavesTreeView.SelectedNode.Index;
             return true;
         }
         else
         {
             index = -1;
             return false;
+        }
+    }
+
+    private void StoredSavesTreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+    {
+        if (e.CancelEdit || e.Label == null)
+        {
+            e.CancelEdit = true;
+            return;
+        }
+
+        if (!Core.RenameStoredSave(e.Label))
+        {
+            e.CancelEdit = true;
         }
     }
 }
