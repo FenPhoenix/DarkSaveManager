@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Security.Cryptography;
 
 namespace DarkSaveManager;
 
@@ -12,7 +11,7 @@ public sealed partial class MainForm : Form
 
     private void Test1Button_Click(object sender, EventArgs e)
     {
-        Core.FillSaveDataList(Config.Thief2Path, Core.InGameSaveDataList);
+        Core.FillSaveDataList(Config.Thief2Path, Core.InGameSaveDataList, stored: false);
         foreach (SaveData saveData in Core.InGameSaveDataList)
         {
             Trace.WriteLine("SAVE ITEM:");
@@ -26,21 +25,6 @@ public sealed partial class MainForm : Form
 
     private void Test2Button_Click(object sender, EventArgs e)
     {
-        List<SaveData> saveDataList = new();
-        Core.FillSaveDataList(Config.Thief2Path, saveDataList);
-
-        Stopwatch sw = Stopwatch.StartNew();
-
-        foreach (SaveData saveData in saveDataList)
-        {
-            using FileStream fs = File.OpenRead(saveData.FullPath);
-            SHA256 sha = SHA256.Create();
-            byte[] hash = sha.ComputeHash(fs);
-            //Trace.WriteLine(hash.Length);
-        }
-
-        sw.Stop();
-        Trace.WriteLine(sw.Elapsed);
     }
 
     private static void RefreshList(TreeView treeView, List<SaveData> saveDataList)

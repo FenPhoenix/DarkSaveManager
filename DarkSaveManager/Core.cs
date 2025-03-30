@@ -30,8 +30,11 @@ internal static partial class Core
         Thief2Watcher.Renamed += Thief2Watcher_Changed;
 
         SaveStoreWatcher.Path = Paths.SaveStore;
-        SaveStoreWatcher.Filter = "*.sav";
-        SaveStoreWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+        SaveStoreWatcher.Filter = "*.sav_*";
+        SaveStoreWatcher.NotifyFilter =
+            NotifyFilters.LastWrite
+            | NotifyFilters.CreationTime
+            | NotifyFilters.FileName;
         SaveStoreWatcher.Changed += SaveStoreWatcher_Changed;
         SaveStoreWatcher.Created += SaveStoreWatcher_Changed;
         SaveStoreWatcher.Deleted += SaveStoreWatcher_Changed;
@@ -56,11 +59,13 @@ internal static partial class Core
         View.Invoke(RefreshViewStoredList);
     }
 
-    internal static void FillSaveDataList(string savePath, List<SaveData> saveDataList)
+    internal static void FillSaveDataList(string savePath, List<SaveData> saveDataList, bool stored)
     {
         saveDataList.Clear();
 
-        string[] saveFiles = Directory.GetFiles(savePath, "*.sav");
+        string pattern = stored ? "*.sav_*" : "*.sav";
+
+        string[] saveFiles = Directory.GetFiles(savePath, pattern);
         if (AnyInvalidlyNamedSaveFiles(saveFiles))
         {
             // TODO: We should just ignore invalidly named saves instead of disallowing them, this is just for
@@ -204,15 +209,14 @@ internal static partial class Core
         return false;
     }
 
-    // TODO: Figure out how we want to do this - we want it different than this, but what
     private static string GetFinalStoredSaveName(SaveData saveData)
     {
-        string originalDest = Path.Combine(Paths.SaveStore, saveData.FileName);
+        string originalDest = Path.Combine(Paths.SaveStore, saveData.FileName) + "_1";
         string finalDest = originalDest;
         int i = 1;
         while (File.Exists(finalDest) && i < int.MaxValue)
         {
-            finalDest = originalDest + "_" + i.ToStrInv();
+            finalDest = string.Concat(originalDest.AsSpan(0, originalDest.LastIndexOf('_')), "_", i.ToStrInv());
             i++;
         }
 
@@ -283,17 +287,17 @@ internal static partial class Core
 
     private static void RefreshViewInGameList()
     {
-        FillSaveDataList(Config.Thief2Path, InGameSaveDataList);
+        FillSaveDataList(Config.Thief2Path, InGameSaveDataList, stored: false);
         View.RefreshInGameSavesList(InGameSaveDataList);
     }
 
     private static void RefreshViewStoredList()
     {
-        FillSaveDataList(Paths.SaveStore, StoredSaveDataList);
+        FillSaveDataList(Paths.SaveStore, StoredSaveDataList, stored: true);
         View.RefreshSaveStoreList(StoredSaveDataList);
     }
 
-    [GeneratedRegex(@"^game[0-9]{4}\.sav$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"^game[0-9]{4}\.sav(_[0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex NumberedSaveGameNameRegex();
 
     internal static void Shutdown()
