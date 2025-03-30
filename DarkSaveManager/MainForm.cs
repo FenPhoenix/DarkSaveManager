@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace DarkSaveManager;
 
 public sealed partial class MainForm : Form
