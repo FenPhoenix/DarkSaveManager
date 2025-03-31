@@ -276,7 +276,7 @@ internal static class Core
     // TODO: Allow swapping to any save slot - we'll rename the incoming file to match its dest slot number
     // TODO: Allow dragging and dropping too. That's kind of needed for decent any-slot-swap UX.
 
-    internal static void SwapSaveToGame()
+    internal static void SwapSaveToGame(int slotIndex = -1)
     {
         if (View.TryGetSelectedStoredSaveIndex(out int index))
         {
@@ -295,7 +295,16 @@ internal static class Core
                     MoveToStore(gameSaveData);
                 }
 
-                string gameDest = Path.Combine(Config.Thief2Path, Path.GetFileName(tempDest));
+                string destFileName = Path.GetFileName(tempDest);
+                if (slotIndex is > -1 and < QuickSaveIndex)
+                {
+                    if (TryGetGameSaveIndex(destFileName, out ushort destFileNameIndex))
+                    {
+                        destFileName = "game" + destFileNameIndex.ToStrInv().PadLeft(4, '0') + ".sav";
+                    }
+                }
+
+                string gameDest = Path.Combine(Config.Thief2Path, destFileName);
                 File.Move(tempDest, gameDest);
 
                 RefreshViewAllLists();
