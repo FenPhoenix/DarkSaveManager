@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace DarkSaveManager;
 
 public sealed partial class MainForm : Form
@@ -150,6 +152,44 @@ public sealed partial class MainForm : Form
         {
             CopyToStoreButton.Enabled = false;
             MoveToStoreButton.Enabled = false;
+        }
+    }
+
+    private void StoredSavesTreeView_ItemDrag(object sender, ItemDragEventArgs e)
+    {
+        if (e.Item != null)
+        {
+            //Trace.WriteLine(((TreeNode)e.Item).Text);
+            //Trace.WriteLine("\r\n"+(((TreeNode)e.Item).Index));
+            InGameSavesTreeView.DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+    }
+
+    private void InGameSavesTreeView_DragEnter(object sender, DragEventArgs e)
+    {
+        e.Effect = DragDropEffects.Move;
+    }
+
+    private void InGameSavesTreeView_DragOver(object sender, DragEventArgs e)
+    {
+        Point pt = InGameSavesTreeView.PointToClient(new Point(e.X, e.Y));
+        TreeViewHitTestInfo info = InGameSavesTreeView.HitTest(pt);
+        if (info.Node != null)
+        {
+            InGameSavesTreeView.SelectedNode = info.Node;
+        }
+    }
+
+    private void InGameSavesTreeView_DragDrop(object sender, DragEventArgs e)
+    {
+        Point pt = InGameSavesTreeView.PointToClient(new Point(e.X, e.Y));
+        TreeViewHitTestInfo info = InGameSavesTreeView.HitTest(pt);
+        if (info.Node != null && e.Data?.GetData(typeof(TreeNode)) is TreeNode node)
+        {
+            Trace.WriteLine(node.Index);
+            Trace.WriteLine(info.Node.Index);
+            // TODO: Make a separate version for drag-drop
+            //Core.SwapSaveToGame(storedIndex: node.Index, slotIndex: info.Node.Index);
         }
     }
 }
