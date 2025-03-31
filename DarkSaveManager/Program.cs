@@ -2,7 +2,7 @@ using System.Text;
 
 namespace DarkSaveManager;
 
-internal static class Program
+file static class Program
 {
     /// <summary>
     ///  The main entry point for the application.

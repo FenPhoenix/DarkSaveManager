@@ -141,7 +141,7 @@ public sealed partial class MainForm : Form
 
     private void InGameSavesTreeView_AfterSelect(object sender, TreeViewEventArgs e)
     {
-        if (Core.TryGetSaveDataForSelectedGameSave(out SaveData? saveData))
+        if (Core.TryGetSaveDataForSelectedGameSave(out _))
         {
             CopyToStoreButton.Enabled = true;
             MoveToStoreButton.Enabled = true;

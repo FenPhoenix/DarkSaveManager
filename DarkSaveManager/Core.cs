@@ -2,12 +2,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.Win32.SafeHandles;
 
 namespace DarkSaveManager;
 
-internal static partial class Core
+internal static class Core
 {
     internal static MainForm View = null!;
 
@@ -233,7 +232,8 @@ internal static partial class Core
             using (new DisableWatchers())
             {
                 // TODO: Validate
-                SaveData saveData = InGameSaveDataList[index];
+                SaveData? saveData = InGameSaveDataList[index];
+                if (saveData == null) return;
                 string finalDest = GetFinalStoredSaveFileName(saveData);
                 File.Copy(saveData.FullPath, finalDest);
 
@@ -250,7 +250,8 @@ internal static partial class Core
             using (new DisableWatchers())
             {
                 // TODO: Validate
-                SaveData saveData = InGameSaveDataList[index];
+                SaveData? saveData = InGameSaveDataList[index];
+                if (saveData == null) return;
                 string finalDest = GetFinalStoredSaveFileName(saveData);
                 File.Move(saveData.FullPath, finalDest);
 
@@ -439,9 +440,6 @@ internal static partial class Core
         saveData = null;
         return false;
     }
-
-    [GeneratedRegex(@"^game[0-9]{4}\.sav(_[0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex NumberedSaveGameNameRegex();
 
     internal static void Shutdown()
     {
