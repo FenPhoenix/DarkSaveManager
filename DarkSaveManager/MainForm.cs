@@ -169,6 +169,13 @@ public sealed partial class MainForm : Form
 
     private void InGameSavesTreeView_DragOver(object sender, DragEventArgs e)
     {
+        if (e.Data?.GetData(typeof(TreeNode)) is not TreeNode node ||
+            node.TreeView == InGameSavesTreeView)
+        {
+            e.Effect = DragDropEffects.None;
+            return;
+        }
+
         e.Effect = DragDropEffects.Move;
         Point pt = InGameSavesTreeView.PointToClient(new Point(e.X, e.Y));
         TreeViewHitTestInfo info = InGameSavesTreeView.HitTest(pt);
@@ -180,6 +187,12 @@ public sealed partial class MainForm : Form
 
     private void InGameSavesTreeView_DragDrop(object sender, DragEventArgs e)
     {
+        if (e.Data?.GetData(typeof(TreeNode)) is not TreeNode node_ ||
+            node_.TreeView == InGameSavesTreeView)
+        {
+            return;
+        }
+
         Point pt = InGameSavesTreeView.PointToClient(new Point(e.X, e.Y));
         TreeViewHitTestInfo info = InGameSavesTreeView.HitTest(pt);
         if (info.Node != null && e.Data?.GetData(typeof(TreeNode)) is TreeNode node)
@@ -198,11 +211,24 @@ public sealed partial class MainForm : Form
 
     private void StoredSavesTreeView_DragOver(object sender, DragEventArgs e)
     {
+        if (e.Data?.GetData(typeof(TreeNode)) is not TreeNode node ||
+            node.TreeView == StoredSavesTreeView)
+        {
+            e.Effect = DragDropEffects.None;
+            return;
+        }
+
         e.Effect = KeyStateIsCtrl(e.KeyState) ? DragDropEffects.Copy : DragDropEffects.Move;
     }
 
     private void StoredSavesTreeView_DragDrop(object sender, DragEventArgs e)
     {
+        if (e.Data?.GetData(typeof(TreeNode)) is not TreeNode node_ ||
+            node_.TreeView == StoredSavesTreeView)
+        {
+            return;
+        }
+
         if (e.Data?.GetData(typeof(TreeNode)) is TreeNode node)
         {
             if (KeyStateIsCtrl(e.KeyState))
