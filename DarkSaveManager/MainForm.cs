@@ -188,8 +188,7 @@ public sealed partial class MainForm : Form
         {
             Trace.WriteLine(node.Index);
             Trace.WriteLine(info.Node.Index);
-            // TODO: Make a separate version for drag-drop
-            //Core.SwapSaveToGame(storedIndex: node.Index, slotIndex: info.Node.Index);
+            Core.SwapSaveToGame_DragDrop(node.Index, info.Node.Index);
         }
     }
 }

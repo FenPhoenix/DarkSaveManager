@@ -137,6 +137,7 @@ sealed partial class MainForm
         // 
         // SwapToGameButton
         // 
+        SwapToGameButton.Enabled = false;
         SwapToGameButton.Location = new Point(368, 272);
         SwapToGameButton.Name = "SwapToGameButton";
         SwapToGameButton.Size = new Size(75, 23);

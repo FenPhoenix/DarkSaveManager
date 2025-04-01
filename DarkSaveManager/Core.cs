@@ -273,8 +273,36 @@ internal static class Core
         }
     }
 
-    // TODO: Allow swapping to any save slot - we'll rename the incoming file to match its dest slot number
-    // TODO: Allow dragging and dropping too. That's kind of needed for decent any-slot-swap UX.
+    internal static void SwapSaveToGame_DragDrop(int storedIndex, int gameIndex)
+    {
+        if (storedIndex == -1) return;
+        if (gameIndex is < 0 or > QuickSaveIndex) return;
+
+        using (new DisableWatchers())
+        {
+            // TODO: Validate
+            SaveData storedSaveData = StoredSaveDataList[storedIndex];
+            string tempDest = Path.Combine(Paths.Temp, storedSaveData.FileName.Substring(0, storedSaveData.FileName.LastIndexOf('_')));
+
+            // TODO: Overwrite or notify or?
+            File.Move(storedSaveData.FullPath, tempDest, overwrite: true);
+
+            SaveData? gameSaveData = InGameSaveDataList[gameIndex];
+            if (gameSaveData != null)
+            {
+                MoveToStore(gameSaveData);
+            }
+
+            string destFileName = gameIndex == QuickSaveIndex
+                ? "quick.sav"
+                : "game" + gameIndex.ToStrInv().PadLeft(4, '0') + ".sav";
+
+            string gameDest = Path.Combine(Config.Thief2Path, destFileName);
+            File.Move(tempDest, gameDest);
+
+            RefreshViewAllLists();
+        }
+    }
 
     internal static void SwapSaveToGame(int slotIndex = -1)
     {
