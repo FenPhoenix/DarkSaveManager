@@ -86,7 +86,8 @@ internal static class Core
 
     private static void GameWatcher_Changed(object sender, FileSystemEventArgs e)
     {
-        View.Invoke(RefreshViewInGameList);
+        UpdateGameSaveDataList(e.FullPath);
+        View.Invoke(static () => View.RefreshInGameSavesList(InGameSaveDataList));
     }
 
     private static void SaveStoreWatcher_Changed(object sender, FileSystemEventArgs e)
@@ -107,6 +108,14 @@ internal static class Core
             {
                 saveDataList.Add(saveData);
             }
+        }
+    }
+
+    internal static void UpdateGameSaveDataList(string saveFile)
+    {
+        if (TryGetSaveData(saveFile, out SaveData? saveData))
+        {
+            InGameSaveDataList[saveData.Index] = saveData;
         }
     }
 
