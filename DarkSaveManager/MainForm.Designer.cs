@@ -38,7 +38,7 @@ sealed partial class MainForm
         Test2Button = new Button();
         SwapToGameButton = new Button();
         ThiefGameTextBox = new TextBox();
-        ThiefGameLabel = new Label();
+        GameSaveDirectoryLabel = new Label();
         ThiefGameBrowseButton = new Button();
         RefreshButton = new Button();
         StoredSaveDeleteButton = new Button();
@@ -162,14 +162,14 @@ sealed partial class MainForm
         ThiefGameTextBox.TabIndex = 4;
         ThiefGameTextBox.Leave += ThiefGameTextBox_Leave;
         // 
-        // ThiefGameLabel
+        // GameSaveDirectoryLabel
         // 
-        ThiefGameLabel.AutoSize = true;
-        ThiefGameLabel.Location = new Point(16, 640);
-        ThiefGameLabel.Name = "ThiefGameLabel";
-        ThiefGameLabel.Size = new Size(70, 15);
-        ThiefGameLabel.TabIndex = 5;
-        ThiefGameLabel.Text = "Thief game:";
+        GameSaveDirectoryLabel.AutoSize = true;
+        GameSaveDirectoryLabel.Location = new Point(16, 640);
+        GameSaveDirectoryLabel.Name = "GameSaveDirectoryLabel";
+        GameSaveDirectoryLabel.Size = new Size(117, 15);
+        GameSaveDirectoryLabel.TabIndex = 5;
+        GameSaveDirectoryLabel.Text = "Game save directory:";
         // 
         // ThiefGameBrowseButton
         // 
@@ -209,7 +209,7 @@ sealed partial class MainForm
         Controls.Add(StoredSaveDeleteButton);
         Controls.Add(RefreshButton);
         Controls.Add(ThiefGameBrowseButton);
-        Controls.Add(ThiefGameLabel);
+        Controls.Add(GameSaveDirectoryLabel);
         Controls.Add(ThiefGameTextBox);
         Controls.Add(InGameSavesLabel);
         Controls.Add(StoredSavesLabel);
@@ -240,7 +240,7 @@ sealed partial class MainForm
     private Button Test2Button;
     private Button SwapToGameButton;
     private TextBox ThiefGameTextBox;
-    private Label ThiefGameLabel;
+    private Label GameSaveDirectoryLabel;
     private Button ThiefGameBrowseButton;
     private Button RefreshButton;
     private Button StoredSaveDeleteButton;
