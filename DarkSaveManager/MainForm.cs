@@ -191,4 +191,35 @@ public sealed partial class MainForm : Form
             Core.SwapSaveToGame_DragDrop(node.Index, info.Node.Index);
         }
     }
+
+    private void ThiefGameBrowseButton_Click(object sender, EventArgs e)
+    {
+        using FolderBrowserDialog d = new();
+        DialogResult result = d.ShowDialog();
+        if (result != DialogResult.OK) return;
+        ThiefGameTextBox.Text = d.SelectedPath;
+
+        Config.GamePath = ThiefGameTextBox.Text;
+        ConfigIni.WriteIni();
+        Core.RefreshGamePath();
+        Core.RefreshViewAllLists();
+    }
+
+    private void ThiefGameTextBox_Leave(object sender, EventArgs e)
+    {
+        Config.GamePath = ThiefGameTextBox.Text;
+        ConfigIni.WriteIni();
+        Core.RefreshGamePath();
+        Core.RefreshViewAllLists();
+    }
+
+    private void RefreshButton_Click(object sender, EventArgs e)
+    {
+        Core.RefreshViewAllLists();
+    }
+
+    internal void SetGamePathField(string gamePath)
+    {
+        ThiefGameTextBox.Text = gamePath;
+    }
 }

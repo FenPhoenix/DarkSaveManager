@@ -6,6 +6,8 @@ using Microsoft.Win32.SafeHandles;
 
 namespace DarkSaveManager;
 
+// TODO: Make UI properly blank/disable etc. when game path is invalid/blank/nonexistent
+
 internal static class Core
 {
     internal static MainForm View = null!;
@@ -14,21 +16,43 @@ internal static class Core
     internal static readonly List<SaveData> StoredSaveDataList = new();
 
     // TODO: Implement list of them, one for each game path
-    internal static readonly FileSystemWatcher Thief2Watcher = new();
+    internal static readonly FileSystemWatcher GameWatcher = new();
     internal static readonly FileSystemWatcher SaveStoreWatcher = new();
+
+    internal static void RefreshGamePath()
+    {
+        try
+        {
+            GameWatcher.Path = Config.GamePath;
+            GameWatcher.EnableRaisingEvents = true;
+        }
+        catch
+        {
+            // Directory doesn't exist
+        }
+    }
 
     internal static void Init()
     {
         Directory.CreateDirectory(Paths.SaveStore);
         Directory.CreateDirectory(Paths.Temp);
 
-        Thief2Watcher.Path = Config.Thief2Path;
-        Thief2Watcher.Filter = "*.sav";
-        Thief2Watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
-        Thief2Watcher.Changed += Thief2Watcher_Changed;
-        Thief2Watcher.Created += Thief2Watcher_Changed;
-        Thief2Watcher.Deleted += Thief2Watcher_Changed;
-        Thief2Watcher.Renamed += Thief2Watcher_Changed;
+        ConfigIni.ReadIni();
+
+        try
+        {
+            GameWatcher.Path = Config.GamePath;
+        }
+        catch
+        {
+            // Dir doesn't exist; hold off till game path refresh
+        }
+        GameWatcher.Filter = "*.sav";
+        GameWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+        GameWatcher.Changed += GameWatcher_Changed;
+        GameWatcher.Created += GameWatcher_Changed;
+        GameWatcher.Deleted += GameWatcher_Changed;
+        GameWatcher.Renamed += GameWatcher_Changed;
 
         SaveStoreWatcher.Path = Paths.SaveStore;
         SaveStoreWatcher.Filter = "*.sav_*";
@@ -46,11 +70,21 @@ internal static class Core
 
         RefreshViewAllLists();
 
-        Thief2Watcher.EnableRaisingEvents = true;
+        View.SetGamePathField(Config.GamePath);
+
+        try
+        {
+            GameWatcher.EnableRaisingEvents = true;
+        }
+        catch
+        {
+            // Dir doesn't exist; hold off till game path refresh
+        }
+
         SaveStoreWatcher.EnableRaisingEvents = true;
     }
 
-    private static void Thief2Watcher_Changed(object sender, FileSystemEventArgs e)
+    private static void GameWatcher_Changed(object sender, FileSystemEventArgs e)
     {
         View.Invoke(RefreshViewInGameList);
     }
@@ -79,6 +113,8 @@ internal static class Core
     internal static void FillGameSaveDataList(string savePath, SaveData?[] saveDataList)
     {
         Array.Clear(saveDataList);
+
+        if (!Directory.Exists(savePath)) return;
 
         const string pattern = "*.sav";
 
@@ -297,7 +333,7 @@ internal static class Core
                 ? "quick.sav"
                 : "game" + gameIndex.ToStrInv().PadLeft(4, '0') + ".sav";
 
-            string gameDest = Path.Combine(Config.Thief2Path, destFileName);
+            string gameDest = Path.Combine(Config.GamePath, destFileName);
             File.Move(tempDest, gameDest);
 
             RefreshViewAllLists();
@@ -332,7 +368,7 @@ internal static class Core
                     }
                 }
 
-                string gameDest = Path.Combine(Config.Thief2Path, destFileName);
+                string gameDest = Path.Combine(Config.GamePath, destFileName);
                 File.Move(tempDest, gameDest);
 
                 RefreshViewAllLists();
@@ -340,7 +376,7 @@ internal static class Core
         }
     }
 
-    private static void RefreshViewAllLists()
+    internal static void RefreshViewAllLists()
     {
         RefreshViewInGameList();
         RefreshViewStoredList();
@@ -348,7 +384,7 @@ internal static class Core
 
     private static void RefreshViewInGameList()
     {
-        FillGameSaveDataList(Config.Thief2Path, InGameSaveDataList);
+        FillGameSaveDataList(Config.GamePath, InGameSaveDataList);
         View.RefreshInGameSavesList(InGameSaveDataList);
     }
 
@@ -480,6 +516,7 @@ internal static class Core
 
     internal static void Shutdown()
     {
+        ConfigIni.WriteIni();
         Application.Exit();
     }
 
@@ -497,10 +534,10 @@ internal static class Core
             {
                 if (_count == 0)
                 {
-                    oldGameEventWatchingValue = Thief2Watcher.EnableRaisingEvents;
+                    oldGameEventWatchingValue = GameWatcher.EnableRaisingEvents;
                     oldStoreEventWatchingValue = SaveStoreWatcher.EnableRaisingEvents;
 
-                    Thief2Watcher.EnableRaisingEvents = false;
+                    GameWatcher.EnableRaisingEvents = false;
                     SaveStoreWatcher.EnableRaisingEvents = false;
                 }
                 _count++;
@@ -513,7 +550,7 @@ internal static class Core
             {
                 if (_count == 1)
                 {
-                    Thief2Watcher.EnableRaisingEvents = oldGameEventWatchingValue;
+                    GameWatcher.EnableRaisingEvents = oldGameEventWatchingValue;
                     SaveStoreWatcher.EnableRaisingEvents = oldStoreEventWatchingValue;
                 }
                 _count--;

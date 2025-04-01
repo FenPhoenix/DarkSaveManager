@@ -1,8 +1,38 @@
-﻿namespace DarkSaveManager;
+﻿using StreamWriter = System.IO.StreamWriter;
+
+namespace DarkSaveManager;
 
 internal sealed class ConfigData
 {
     // TODO: Add support for unlimited game paths (including multiple copies of one game)
-    // TODO: Implement save/load of config data
-    internal string Thief2Path = @"C:\Thief Games\Thief-ND-TFix2-127a (Titanium Practice)\SAVES";
+    internal string GamePath = "";
+}
+
+internal static class ConfigIni
+{
+    internal static void ReadIni()
+    {
+        try
+        {
+            using StreamReader sr = new(Paths.ConfigIni);
+            while (sr.ReadLine() is { } line)
+            {
+                string lineT = line.Trim();
+                if (lineT.StartsWithI("GamePath="))
+                {
+                    Config.GamePath = lineT.Substring("GamePath=".Length);
+                }
+            }
+        }
+        catch
+        {
+            // ignore - file doesn't exist
+        }
+    }
+
+    internal static void WriteIni()
+    {
+        using StreamWriter sw = new(Paths.ConfigIni);
+        sw.WriteLine("GamePath=" + Config.GamePath);
+    }
 }

@@ -37,6 +37,10 @@ sealed partial class MainForm
         InGameSavesLabel = new Label();
         Test2Button = new Button();
         SwapToGameButton = new Button();
+        ThiefGameTextBox = new TextBox();
+        ThiefGameLabel = new Label();
+        ThiefGameBrowseButton = new Button();
+        RefreshButton = new Button();
         SuspendLayout();
         // 
         // Test1Button
@@ -146,11 +150,52 @@ sealed partial class MainForm
         SwapToGameButton.UseVisualStyleBackColor = true;
         SwapToGameButton.Click += SwapToGameButton_Click;
         // 
+        // ThiefGameTextBox
+        // 
+        ThiefGameTextBox.Location = new Point(16, 656);
+        ThiefGameTextBox.Name = "ThiefGameTextBox";
+        ThiefGameTextBox.Size = new Size(776, 23);
+        ThiefGameTextBox.TabIndex = 4;
+        ThiefGameTextBox.Leave += ThiefGameTextBox_Leave;
+        // 
+        // ThiefGameLabel
+        // 
+        ThiefGameLabel.AutoSize = true;
+        ThiefGameLabel.Location = new Point(16, 640);
+        ThiefGameLabel.Name = "ThiefGameLabel";
+        ThiefGameLabel.Size = new Size(70, 15);
+        ThiefGameLabel.TabIndex = 5;
+        ThiefGameLabel.Text = "Thief game:";
+        // 
+        // ThiefGameBrowseButton
+        // 
+        ThiefGameBrowseButton.Location = new Point(792, 656);
+        ThiefGameBrowseButton.Name = "ThiefGameBrowseButton";
+        ThiefGameBrowseButton.Size = new Size(83, 23);
+        ThiefGameBrowseButton.TabIndex = 6;
+        ThiefGameBrowseButton.Text = "Browse...";
+        ThiefGameBrowseButton.UseVisualStyleBackColor = true;
+        ThiefGameBrowseButton.Click += ThiefGameBrowseButton_Click;
+        // 
+        // RefreshButton
+        // 
+        RefreshButton.Location = new Point(792, 72);
+        RefreshButton.Name = "RefreshButton";
+        RefreshButton.Size = new Size(75, 23);
+        RefreshButton.TabIndex = 7;
+        RefreshButton.Text = "Refresh";
+        RefreshButton.UseVisualStyleBackColor = true;
+        RefreshButton.Click += RefreshButton_Click;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(881, 771);
+        Controls.Add(RefreshButton);
+        Controls.Add(ThiefGameBrowseButton);
+        Controls.Add(ThiefGameLabel);
+        Controls.Add(ThiefGameTextBox);
         Controls.Add(InGameSavesLabel);
         Controls.Add(StoredSavesLabel);
         Controls.Add(CopyToStoreButton);
@@ -179,4 +224,8 @@ sealed partial class MainForm
     private Label InGameSavesLabel;
     private Button Test2Button;
     private Button SwapToGameButton;
+    private TextBox ThiefGameTextBox;
+    private Label ThiefGameLabel;
+    private Button ThiefGameBrowseButton;
+    private Button RefreshButton;
 }
