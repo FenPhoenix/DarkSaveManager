@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Microsoft.VisualBasic.FileIO;
 
 namespace DarkSaveManager;
@@ -156,23 +156,20 @@ public sealed partial class MainForm : Form
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool KeyStateIsCtrl(int keyState) => (keyState & 8) == 8;
+
     private void StoredSavesTreeView_ItemDrag(object sender, ItemDragEventArgs e)
     {
         if (e.Item != null)
         {
-            //Trace.WriteLine(((TreeNode)e.Item).Text);
-            //Trace.WriteLine("\r\n"+(((TreeNode)e.Item).Index));
-            InGameSavesTreeView.DoDragDrop(e.Item, DragDropEffects.Move);
+            DoDragDrop(e.Item, DragDropEffects.Move);
         }
-    }
-
-    private void InGameSavesTreeView_DragEnter(object sender, DragEventArgs e)
-    {
-        e.Effect = DragDropEffects.Move;
     }
 
     private void InGameSavesTreeView_DragOver(object sender, DragEventArgs e)
     {
+        e.Effect = DragDropEffects.Move;
         Point pt = InGameSavesTreeView.PointToClient(new Point(e.X, e.Y));
         TreeViewHitTestInfo info = InGameSavesTreeView.HitTest(pt);
         if (info.Node != null)
@@ -187,9 +184,35 @@ public sealed partial class MainForm : Form
         TreeViewHitTestInfo info = InGameSavesTreeView.HitTest(pt);
         if (info.Node != null && e.Data?.GetData(typeof(TreeNode)) is TreeNode node)
         {
-            Trace.WriteLine(node.Index);
-            Trace.WriteLine(info.Node.Index);
             Core.SwapSaveToGame_DragDrop(node.Index, info.Node.Index);
+        }
+    }
+
+    private void InGameSavesTreeView_ItemDrag(object sender, ItemDragEventArgs e)
+    {
+        if (e.Item != null)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move | DragDropEffects.Copy);
+        }
+    }
+
+    private void StoredSavesTreeView_DragOver(object sender, DragEventArgs e)
+    {
+        e.Effect = KeyStateIsCtrl(e.KeyState) ? DragDropEffects.Copy : DragDropEffects.Move;
+    }
+
+    private void StoredSavesTreeView_DragDrop(object sender, DragEventArgs e)
+    {
+        if (e.Data?.GetData(typeof(TreeNode)) is TreeNode node)
+        {
+            if (KeyStateIsCtrl(e.KeyState))
+            {
+                Core.CopySaveDataToStore(node.Index);
+            }
+            else
+            {
+                Core.MoveSaveDataToStore(node.Index);
+            }
         }
     }
 

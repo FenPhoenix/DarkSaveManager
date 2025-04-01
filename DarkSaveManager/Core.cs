@@ -303,6 +303,38 @@ internal static class Core
     }
 
     // TODO: Handle errors and if it already exists
+    internal static void CopySaveDataToStore(int index)
+    {
+        using (new DisableWatchers())
+        {
+            SaveData? saveData = InGameSaveDataList[index];
+            if (saveData == null) return;
+
+            // TODO: Validate
+            string finalDest = GetFinalStoredSaveFileName(saveData);
+            File.Copy(saveData.FullPath, finalDest);
+
+            RefreshViewAllLists();
+        }
+    }
+
+    // TODO: Handle errors and if it already exists
+    internal static void MoveSaveDataToStore(int index)
+    {
+        using (new DisableWatchers())
+        {
+            SaveData? saveData = InGameSaveDataList[index];
+            if (saveData == null) return;
+
+            // TODO: Validate
+            string finalDest = GetFinalStoredSaveFileName(saveData);
+            File.Move(saveData.FullPath, finalDest);
+
+            RefreshViewAllLists();
+        }
+    }
+
+    // TODO: Handle errors and if it already exists
     internal static void MoveSelectedToStore()
     {
         if (View.TryGetSelectedInGameSaveIndex(out int index))

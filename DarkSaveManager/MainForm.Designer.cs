@@ -68,14 +68,15 @@ sealed partial class MainForm
         InGameSavesTreeView.Size = new Size(248, 464);
         InGameSavesTreeView.TabIndex = 1;
         InGameSavesTreeView.AfterLabelEdit += InGameSavesTreeView_AfterLabelEdit;
+        InGameSavesTreeView.ItemDrag += InGameSavesTreeView_ItemDrag;
         InGameSavesTreeView.AfterSelect += InGameSavesTreeView_AfterSelect;
         InGameSavesTreeView.DragDrop += InGameSavesTreeView_DragDrop;
-        InGameSavesTreeView.DragEnter += InGameSavesTreeView_DragEnter;
         InGameSavesTreeView.DragOver += InGameSavesTreeView_DragOver;
         InGameSavesTreeView.KeyDown += TreeView_KeyDown;
         // 
         // StoredSavesTreeView
         // 
+        StoredSavesTreeView.AllowDrop = true;
         StoredSavesTreeView.FullRowSelect = true;
         StoredSavesTreeView.HideSelection = false;
         StoredSavesTreeView.LabelEdit = true;
@@ -88,6 +89,8 @@ sealed partial class MainForm
         StoredSavesTreeView.TabIndex = 1;
         StoredSavesTreeView.AfterLabelEdit += StoredSavesTreeView_AfterLabelEdit;
         StoredSavesTreeView.ItemDrag += StoredSavesTreeView_ItemDrag;
+        StoredSavesTreeView.DragDrop += StoredSavesTreeView_DragDrop;
+        StoredSavesTreeView.DragOver += StoredSavesTreeView_DragOver;
         StoredSavesTreeView.KeyDown += TreeView_KeyDown;
         // 
         // MoveToStoreButton
