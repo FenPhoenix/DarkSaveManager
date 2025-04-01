@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using System.Security.Permissions;
-using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.FileIO;
 
 namespace DarkSaveManager;
@@ -230,7 +228,7 @@ public sealed partial class MainForm : Form
     {
         if (Core.TryGetSaveDataForSelectedStoredSave(out SaveData? saveData))
         {
-            Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(
+            FileSystem.DeleteFile(
                 saveData.FullPath,
                 UIOption.OnlyErrorDialogs,
                 RecycleOption.SendToRecycleBin);
