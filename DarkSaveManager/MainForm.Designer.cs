@@ -41,6 +41,7 @@ sealed partial class MainForm
         ThiefGameLabel = new Label();
         ThiefGameBrowseButton = new Button();
         RefreshButton = new Button();
+        StoredSaveDeleteButton = new Button();
         SuspendLayout();
         // 
         // Test1Button
@@ -187,11 +188,22 @@ sealed partial class MainForm
         RefreshButton.UseVisualStyleBackColor = true;
         RefreshButton.Click += RefreshButton_Click;
         // 
+        // StoredSaveDeleteButton
+        // 
+        StoredSaveDeleteButton.Location = new Point(281, 72);
+        StoredSaveDeleteButton.Name = "StoredSaveDeleteButton";
+        StoredSaveDeleteButton.Size = new Size(24, 23);
+        StoredSaveDeleteButton.TabIndex = 8;
+        StoredSaveDeleteButton.Text = "X";
+        StoredSaveDeleteButton.UseVisualStyleBackColor = true;
+        StoredSaveDeleteButton.Click += StoredSaveDeleteButton_Click;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(881, 771);
+        Controls.Add(StoredSaveDeleteButton);
         Controls.Add(RefreshButton);
         Controls.Add(ThiefGameBrowseButton);
         Controls.Add(ThiefGameLabel);
@@ -228,4 +240,5 @@ sealed partial class MainForm
     private Label ThiefGameLabel;
     private Button ThiefGameBrowseButton;
     private Button RefreshButton;
+    private Button StoredSaveDeleteButton;
 }

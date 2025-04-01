@@ -502,6 +502,18 @@ internal static class Core
         return false;
     }
 
+    internal static bool TryGetSaveDataForSelectedStoredSave([NotNullWhen(true)] out SaveData? saveData)
+    {
+        if (View.TryGetSelectedStoredSaveIndex(out int index))
+        {
+            saveData = StoredSaveDataList[index];
+            return true;
+        }
+
+        saveData = null;
+        return false;
+    }
+
     internal static bool TryGetSaveDataForSelectedGameSave([NotNullWhen(true)] out SaveData? saveData)
     {
         if (View.TryGetSelectedInGameSaveIndex(out int index))
