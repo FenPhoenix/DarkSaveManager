@@ -159,6 +159,20 @@ public sealed partial class MainForm : Form
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool KeyStateIsCtrl(int keyState) => (keyState & 8) == 8;
 
+    private static bool IsSameList(DragEventArgs e, TreeView treeView)
+    {
+        if (e.Data?.GetData(typeof(TreeNode)) is not TreeNode node ||
+            node.TreeView == treeView)
+        {
+            e.Effect = DragDropEffects.None;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private void StoredSavesTreeView_ItemDrag(object sender, ItemDragEventArgs e)
     {
         if (e.Item != null)
@@ -169,12 +183,7 @@ public sealed partial class MainForm : Form
 
     private void InGameSavesTreeView_DragOver(object sender, DragEventArgs e)
     {
-        if (e.Data?.GetData(typeof(TreeNode)) is not TreeNode node ||
-            node.TreeView == InGameSavesTreeView)
-        {
-            e.Effect = DragDropEffects.None;
-            return;
-        }
+        if (IsSameList(e, InGameSavesTreeView)) return;
 
         e.Effect = DragDropEffects.Move;
         Point pt = InGameSavesTreeView.PointToClient(new Point(e.X, e.Y));
@@ -187,11 +196,7 @@ public sealed partial class MainForm : Form
 
     private void InGameSavesTreeView_DragDrop(object sender, DragEventArgs e)
     {
-        if (e.Data?.GetData(typeof(TreeNode)) is not TreeNode node_ ||
-            node_.TreeView == InGameSavesTreeView)
-        {
-            return;
-        }
+        if (IsSameList(e, InGameSavesTreeView)) return;
 
         Point pt = InGameSavesTreeView.PointToClient(new Point(e.X, e.Y));
         TreeViewHitTestInfo info = InGameSavesTreeView.HitTest(pt);
@@ -211,23 +216,14 @@ public sealed partial class MainForm : Form
 
     private void StoredSavesTreeView_DragOver(object sender, DragEventArgs e)
     {
-        if (e.Data?.GetData(typeof(TreeNode)) is not TreeNode node ||
-            node.TreeView == StoredSavesTreeView)
-        {
-            e.Effect = DragDropEffects.None;
-            return;
-        }
+        if (IsSameList(e, StoredSavesTreeView)) return;
 
         e.Effect = KeyStateIsCtrl(e.KeyState) ? DragDropEffects.Copy : DragDropEffects.Move;
     }
 
     private void StoredSavesTreeView_DragDrop(object sender, DragEventArgs e)
     {
-        if (e.Data?.GetData(typeof(TreeNode)) is not TreeNode node_ ||
-            node_.TreeView == StoredSavesTreeView)
-        {
-            return;
-        }
+        if (IsSameList(e, StoredSavesTreeView)) return;
 
         if (e.Data?.GetData(typeof(TreeNode)) is TreeNode node)
         {
