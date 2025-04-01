@@ -1,6 +1,7 @@
 ﻿using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 
@@ -127,7 +128,7 @@ internal static class Core
             {
                 InGameSaveDataList[index] = null;
             }
-            else if (fileName.EqualsI("quick.sav"))
+            else if (fileName.EqualsI(QuickSaveFileName))
             {
                 InGameSaveDataList[QuickSaveIndex] = null;
             }
@@ -197,7 +198,7 @@ internal static class Core
 
     private static bool TryGetGameSaveIndex(string fileNameOnly, out ushort index)
     {
-        if (fileNameOnly.StartsWithI("quick.sav"))
+        if (fileNameOnly.StartsWithI(QuickSaveFileName))
         {
             index = QuickSaveIndex;
             return true;
@@ -243,7 +244,7 @@ internal static class Core
                     return false;
                 }
 
-                if (!chunkHeaderBuffer.SequenceEqual("SAVEDESC\0\0\0\0"u8))
+                if (!ChunkHeaderIsSaveDesc(chunkHeaderBuffer))
                 {
                     continue;
                 }
@@ -251,8 +252,7 @@ internal static class Core
                 stream.Position = offset;
                 stream.ReadExactly(chunkHeaderBuffer);
 
-                // TODO: Dedupe
-                if (!chunkHeaderBuffer.SequenceEqual("SAVEDESC\0\0\0\0"u8))
+                if (!ChunkHeaderIsSaveDesc(chunkHeaderBuffer))
                 {
                     return false;
                 }
@@ -268,6 +268,12 @@ internal static class Core
         }
 
         return false;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static bool ChunkHeaderIsSaveDesc(Span<byte> chunkHeaderBuffer)
+        {
+            return chunkHeaderBuffer.SequenceEqual("SAVEDESC\0\0\0\0"u8);
+        }
     }
 
     private static string GetFinalStoredSaveFileName(SaveData saveData)
@@ -386,7 +392,7 @@ internal static class Core
             }
 
             string destFileName = gameIndex == QuickSaveIndex
-                ? "quick.sav"
+                ? QuickSaveFileName
                 : "game" + gameIndex.ToStrInv().PadLeft(4, '0') + ".sav";
 
             string gameDest = Path.Combine(Config.GamePath, destFileName);

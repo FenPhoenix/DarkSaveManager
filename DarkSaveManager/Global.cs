@@ -8,4 +8,6 @@ internal static class Global
     internal const ushort QuickSaveIndex = 15;
     internal const int MaxFriendlySaveNameLength = 1024;
     internal const int SaveSlotCount = 16;
+
+    internal const string QuickSaveFileName = "quick.sav";
 }
