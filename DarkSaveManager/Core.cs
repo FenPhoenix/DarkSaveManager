@@ -48,7 +48,10 @@ internal static class Core
             // Dir doesn't exist; hold off till game path refresh
         }
         GameWatcher.Filter = "*.sav";
-        GameWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+        GameWatcher.NotifyFilter =
+            NotifyFilters.LastWrite
+            | NotifyFilters.CreationTime
+            | NotifyFilters.FileName;
         GameWatcher.Changed += GameWatcher_Changed;
         GameWatcher.Created += GameWatcher_Changed;
         GameWatcher.Deleted += GameWatcher_Changed;
@@ -116,6 +119,18 @@ internal static class Core
         if (TryGetSaveData(saveFile, out SaveData? saveData))
         {
             InGameSaveDataList[saveData.Index] = saveData;
+        }
+        else
+        {
+            string fileName = Path.GetFileName(saveFile);
+            if (TryGetGameSaveIndex(fileName, out ushort index))
+            {
+                InGameSaveDataList[index] = null;
+            }
+            else if (fileName.EqualsI("quick.sav"))
+            {
+                InGameSaveDataList[QuickSaveIndex] = null;
+            }
         }
     }
 
