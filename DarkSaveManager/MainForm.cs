@@ -238,25 +238,25 @@ public sealed partial class MainForm : Form
         }
     }
 
-    private void ThiefGameBrowseButton_Click(object sender, EventArgs e)
+    private void UpdateGamePath()
     {
-        using FolderBrowserDialog d = new();
-        DialogResult result = d.ShowDialog();
-        if (result != DialogResult.OK) return;
-        ThiefGameTextBox.Text = d.SelectedPath;
-
         Config.GamePath = ThiefGameTextBox.Text;
         ConfigIni.WriteIni();
         Core.RefreshGamePath();
         Core.RefreshViewAllLists();
     }
 
+    private void ThiefGameBrowseButton_Click(object sender, EventArgs e)
+    {
+        using FolderBrowserDialog d = new();
+        if (d.ShowDialog() != DialogResult.OK) return;
+        ThiefGameTextBox.Text = d.SelectedPath;
+        UpdateGamePath();
+    }
+
     private void ThiefGameTextBox_Leave(object sender, EventArgs e)
     {
-        Config.GamePath = ThiefGameTextBox.Text;
-        ConfigIni.WriteIni();
-        Core.RefreshGamePath();
-        Core.RefreshViewAllLists();
+        UpdateGamePath();
     }
 
     private void RefreshButton_Click(object sender, EventArgs e)
