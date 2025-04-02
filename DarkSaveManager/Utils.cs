@@ -8,9 +8,15 @@ internal static class Utils
 {
     internal static bool EqualsI(this string first, string second) => first.Equals(second, StringComparison.OrdinalIgnoreCase);
 
+    internal static bool EqualsI(this ReadOnlySpan<char> first, ReadOnlySpan<char> second) => first.Equals(second, StringComparison.OrdinalIgnoreCase);
+
     internal static bool StartsWithI(this string first, string second) => first.StartsWith(second, StringComparison.OrdinalIgnoreCase);
 
+    internal static bool StartsWithI(this ReadOnlySpan<char> first, ReadOnlySpan<char> second) => first.StartsWith(second, StringComparison.OrdinalIgnoreCase);
+
     internal static bool EndsWithI(this string first, string second) => first.EndsWith(second, StringComparison.OrdinalIgnoreCase);
+
+    internal static bool EndsWithI(this ReadOnlySpan<char> first, ReadOnlySpan<char> second) => first.EndsWith(second, StringComparison.OrdinalIgnoreCase);
 
     public static Encoding GetOEMCodePageOrFallback(Encoding fallback)
     {

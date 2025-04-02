@@ -122,7 +122,7 @@ internal static class Core
         }
         else
         {
-            string fileName = Path.GetFileName(saveFile);
+            ReadOnlySpan<char> fileName = Path.GetFileName(saveFile.AsSpan());
             if (TryGetGameSaveIndex(fileName, out ushort index))
             {
                 InGameSaveDataList[index] = null;
@@ -189,7 +189,7 @@ internal static class Core
         }
     }
 
-    private static bool TryGetGameSaveIndex(string fileNameOnly, out ushort index)
+    private static bool TryGetGameSaveIndex(ReadOnlySpan<char> fileNameOnly, out ushort index)
     {
         if (fileNameOnly.StartsWithI(QuickSaveFileName))
         {
@@ -199,7 +199,7 @@ internal static class Core
         else if (fileNameOnly.Length >= 12 &&
                  fileNameOnly.StartsWithI("game") &&
                  fileNameOnly[8] == '.' &&
-                 ushort.TryParse(fileNameOnly.AsSpan(4, 4), NumberStyles.None, NumberFormatInfo.InvariantInfo, out index) &&
+                 ushort.TryParse(fileNameOnly.Slice(4, 4), NumberStyles.None, NumberFormatInfo.InvariantInfo, out index) &&
                  index < QuickSaveIndex)
         {
             return true;
@@ -408,13 +408,13 @@ internal static class Core
                 // TODO: Overwrite or notify or?
                 File.Move(storedSaveData.FullPath, tempDest, overwrite: true);
 
-                SaveData? gameSaveData = Array.Find(InGameSaveDataList, x => x?.FileName.EqualsI(Path.GetFileName(tempDest)) == true);
+                string destFileName = Path.GetFileName(tempDest);
+                SaveData? gameSaveData = Array.Find(InGameSaveDataList, x => x?.FileName.EqualsI(destFileName) == true);
                 if (gameSaveData != null)
                 {
                     MoveToStore(gameSaveData);
                 }
 
-                string destFileName = Path.GetFileName(tempDest);
                 if (slotIndex is > -1 and < QuickSaveIndex)
                 {
                     if (TryGetGameSaveIndex(destFileName, out ushort destFileNameIndex))
