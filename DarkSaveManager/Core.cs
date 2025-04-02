@@ -119,7 +119,7 @@ internal static class Core
     {
         if (TryGetSaveData(saveFile, out SaveData? saveData))
         {
-            InGameSaveDataList[saveData.Index] = saveData;
+            InGameSaveDataList[saveData.SlotIndex] = saveData;
         }
         else
         {
@@ -148,7 +148,7 @@ internal static class Core
         {
             if (TryGetSaveData(saveFile, out SaveData? saveData))
             {
-                saveDataList[saveData.Index] = saveData;
+                saveDataList[saveData.SlotIndex] = saveData;
             }
         }
     }
