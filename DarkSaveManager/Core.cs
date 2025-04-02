@@ -1,5 +1,4 @@
-﻿using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -163,32 +162,26 @@ internal static class Core
 
             if (!TrySeekToFriendlySaveName(stream, out _)) return false;
 
-            byte[] nameBuffer = ArrayPool<byte>.Shared.Rent(MaxFriendlySaveNameLength);
-            try
+            using RentScope<byte> nameBuffer = new(MaxFriendlySaveNameLength);
+
+            stream.ReadExactly(nameBuffer.Span);
+
+            int nameEndIndex = nameBuffer.Span.IndexOf((byte)0);
+            int nameLength = nameEndIndex == -1 ? MaxFriendlySaveNameLength : nameEndIndex + 1;
+
+            // The T2 source code doesn't seem to explicitly do any encoding stuff at all - save names seem
+            // to be read in the OEM codepage (850 in my case): 8B == ï
+            string friendlySaveName = Utils.GetOEMCodePageOrFallback(Encoding.UTF8).GetString(nameBuffer.Span[..nameLength]);
+
+            string fileNameOnly = Path.GetFileName(fullPath);
+
+            if (!TryGetGameSaveIndex(fileNameOnly, out ushort index))
             {
-                stream.ReadExactly(nameBuffer, 0, MaxFriendlySaveNameLength);
-
-                int nameEndIndex = Array.IndexOf<byte>(nameBuffer, 0, MaxFriendlySaveNameLength);
-                int nameLength = nameEndIndex == -1 ? MaxFriendlySaveNameLength : nameEndIndex + 1;
-
-                // The T2 source code doesn't seem to explicitly do any encoding stuff at all - save names seem
-                // to be read in the OEM codepage (850 in my case): 8B == ï
-                string friendlySaveName = Utils.GetOEMCodePageOrFallback(Encoding.UTF8).GetString(nameBuffer, 0, nameLength);
-
-                string fileNameOnly = Path.GetFileName(fullPath);
-
-                if (!TryGetGameSaveIndex(fileNameOnly, out ushort index))
-                {
-                    return false;
-                }
-
-                saveData = new SaveData(index, fullPath, fileNameOnly, friendlySaveName);
-                return true;
+                return false;
             }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(nameBuffer);
-            }
+
+            saveData = new SaveData(index, fullPath, fileNameOnly, friendlySaveName);
+            return true;
         }
         catch
         {
@@ -512,7 +505,7 @@ internal static class Core
         return RenameSave(saveData, newNameBytes);
     }
 
-    private static bool RenameSave(SaveData saveData, byte[] newNameBytes_)
+    private static bool RenameSave(SaveData saveData, byte[] newNameBytes)
     {
         using (new DisableWatchers())
         {
@@ -521,8 +514,8 @@ internal static class Core
             bytes zero. Otherwise shorter names will still leave whatever was in there after their length (so
             "Cargo 0:00:00" -> "Cargo" becomes "Cargo 0:00:00" in the file still).
             */
-            byte[] nameBytesFull = new byte[MaxFriendlySaveNameLength];
-            Array.Copy(newNameBytes_, nameBytesFull, newNameBytes_.Length);
+            using RentScope<byte> nameBytesFull = new(MaxFriendlySaveNameLength, clear: true);
+            newNameBytes.CopyTo(nameBytesFull.Span);
 
             try
             {
@@ -536,7 +529,7 @@ internal static class Core
                 if (!seekSuccess) return false;
 
                 using SafeFileHandle handle = File.OpenHandle(saveData.FullPath, FileMode.Open, FileAccess.Write);
-                RandomAccess.Write(handle, nameBytesFull, friendlySaveNamePosition);
+                RandomAccess.Write(handle, nameBytesFull.Span, friendlySaveNamePosition);
 
                 return true;
             }
