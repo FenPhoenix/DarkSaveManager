@@ -2,12 +2,12 @@
 
 internal sealed class SaveData
 {
-    internal readonly int SlotIndex;
+    internal readonly ushort SlotIndex;
     internal readonly string FullPath;
     internal readonly string FileName;
     internal readonly string FriendlySaveName;
 
-    internal SaveData(int slotIndex, string fullPath, string fileName, string friendlySaveName)
+    internal SaveData(ushort slotIndex, string fullPath, string fileName, string friendlySaveName)
     {
         SlotIndex = slotIndex;
         FullPath = fullPath;
