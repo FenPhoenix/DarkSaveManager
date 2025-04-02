@@ -42,6 +42,12 @@ sealed partial class MainForm
         ThiefGameBrowseButton = new Button();
         RefreshButton = new Button();
         StoredSaveDeleteButton = new Button();
+        GamesGroupBox = new GroupBox();
+        GamesComboBox = new ComboBox();
+        AddGameButton = new Button();
+        EditGameButton = new Button();
+        RemoveGameButton = new Button();
+        GamesGroupBox.SuspendLayout();
         SuspendLayout();
         // 
         // Test1Button
@@ -60,7 +66,7 @@ sealed partial class MainForm
         InGameSavesTreeView.FullRowSelect = true;
         InGameSavesTreeView.HideSelection = false;
         InGameSavesTreeView.LabelEdit = true;
-        InGameSavesTreeView.Location = new Point(504, 96);
+        InGameSavesTreeView.Location = new Point(504, 224);
         InGameSavesTreeView.Name = "InGameSavesTreeView";
         InGameSavesTreeView.ShowLines = false;
         InGameSavesTreeView.ShowPlusMinus = false;
@@ -80,7 +86,7 @@ sealed partial class MainForm
         StoredSavesTreeView.FullRowSelect = true;
         StoredSavesTreeView.HideSelection = false;
         StoredSavesTreeView.LabelEdit = true;
-        StoredSavesTreeView.Location = new Point(56, 96);
+        StoredSavesTreeView.Location = new Point(56, 224);
         StoredSavesTreeView.Name = "StoredSavesTreeView";
         StoredSavesTreeView.ShowLines = false;
         StoredSavesTreeView.ShowPlusMinus = false;
@@ -96,7 +102,7 @@ sealed partial class MainForm
         // MoveToStoreButton
         // 
         MoveToStoreButton.Enabled = false;
-        MoveToStoreButton.Location = new Point(368, 240);
+        MoveToStoreButton.Location = new Point(368, 368);
         MoveToStoreButton.Name = "MoveToStoreButton";
         MoveToStoreButton.Size = new Size(75, 23);
         MoveToStoreButton.TabIndex = 2;
@@ -107,7 +113,7 @@ sealed partial class MainForm
         // CopyToStoreButton
         // 
         CopyToStoreButton.Enabled = false;
-        CopyToStoreButton.Location = new Point(368, 216);
+        CopyToStoreButton.Location = new Point(368, 344);
         CopyToStoreButton.Name = "CopyToStoreButton";
         CopyToStoreButton.Size = new Size(75, 23);
         CopyToStoreButton.TabIndex = 2;
@@ -118,7 +124,7 @@ sealed partial class MainForm
         // StoredSavesLabel
         // 
         StoredSavesLabel.AutoSize = true;
-        StoredSavesLabel.Location = new Point(56, 80);
+        StoredSavesLabel.Location = new Point(56, 208);
         StoredSavesLabel.Name = "StoredSavesLabel";
         StoredSavesLabel.Size = new Size(75, 15);
         StoredSavesLabel.TabIndex = 3;
@@ -127,7 +133,7 @@ sealed partial class MainForm
         // InGameSavesLabel
         // 
         InGameSavesLabel.AutoSize = true;
-        InGameSavesLabel.Location = new Point(504, 80);
+        InGameSavesLabel.Location = new Point(504, 208);
         InGameSavesLabel.Name = "InGameSavesLabel";
         InGameSavesLabel.Size = new Size(86, 15);
         InGameSavesLabel.TabIndex = 3;
@@ -146,7 +152,7 @@ sealed partial class MainForm
         // SwapToGameButton
         // 
         SwapToGameButton.Enabled = false;
-        SwapToGameButton.Location = new Point(368, 272);
+        SwapToGameButton.Location = new Point(368, 400);
         SwapToGameButton.Name = "SwapToGameButton";
         SwapToGameButton.Size = new Size(75, 23);
         SwapToGameButton.TabIndex = 2;
@@ -156,16 +162,16 @@ sealed partial class MainForm
         // 
         // ThiefGameTextBox
         // 
-        ThiefGameTextBox.Location = new Point(16, 656);
+        ThiefGameTextBox.Location = new Point(16, 96);
         ThiefGameTextBox.Name = "ThiefGameTextBox";
-        ThiefGameTextBox.Size = new Size(776, 23);
+        ThiefGameTextBox.Size = new Size(648, 23);
         ThiefGameTextBox.TabIndex = 4;
         ThiefGameTextBox.Leave += ThiefGameTextBox_Leave;
         // 
         // GameSaveDirectoryLabel
         // 
         GameSaveDirectoryLabel.AutoSize = true;
-        GameSaveDirectoryLabel.Location = new Point(16, 640);
+        GameSaveDirectoryLabel.Location = new Point(16, 80);
         GameSaveDirectoryLabel.Name = "GameSaveDirectoryLabel";
         GameSaveDirectoryLabel.Size = new Size(117, 15);
         GameSaveDirectoryLabel.TabIndex = 5;
@@ -173,7 +179,7 @@ sealed partial class MainForm
         // 
         // ThiefGameBrowseButton
         // 
-        ThiefGameBrowseButton.Location = new Point(792, 656);
+        ThiefGameBrowseButton.Location = new Point(664, 96);
         ThiefGameBrowseButton.Name = "ThiefGameBrowseButton";
         ThiefGameBrowseButton.Size = new Size(83, 23);
         ThiefGameBrowseButton.TabIndex = 6;
@@ -193,7 +199,7 @@ sealed partial class MainForm
         // 
         // StoredSaveDeleteButton
         // 
-        StoredSaveDeleteButton.Location = new Point(281, 72);
+        StoredSaveDeleteButton.Location = new Point(281, 200);
         StoredSaveDeleteButton.Name = "StoredSaveDeleteButton";
         StoredSaveDeleteButton.Size = new Size(24, 23);
         StoredSaveDeleteButton.TabIndex = 8;
@@ -201,16 +207,66 @@ sealed partial class MainForm
         StoredSaveDeleteButton.UseVisualStyleBackColor = true;
         StoredSaveDeleteButton.Click += StoredSaveDeleteButton_Click;
         // 
+        // GamesGroupBox
+        // 
+        GamesGroupBox.Controls.Add(RemoveGameButton);
+        GamesGroupBox.Controls.Add(EditGameButton);
+        GamesGroupBox.Controls.Add(AddGameButton);
+        GamesGroupBox.Controls.Add(GamesComboBox);
+        GamesGroupBox.Controls.Add(GameSaveDirectoryLabel);
+        GamesGroupBox.Controls.Add(ThiefGameTextBox);
+        GamesGroupBox.Controls.Add(ThiefGameBrowseButton);
+        GamesGroupBox.Location = new Point(16, 16);
+        GamesGroupBox.Name = "GamesGroupBox";
+        GamesGroupBox.Size = new Size(760, 144);
+        GamesGroupBox.TabIndex = 9;
+        GamesGroupBox.TabStop = false;
+        GamesGroupBox.Text = "Games";
+        // 
+        // GamesComboBox
+        // 
+        GamesComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+        GamesComboBox.FormattingEnabled = true;
+        GamesComboBox.Location = new Point(16, 32);
+        GamesComboBox.Name = "GamesComboBox";
+        GamesComboBox.Size = new Size(528, 23);
+        GamesComboBox.TabIndex = 7;
+        // 
+        // AddGameButton
+        // 
+        AddGameButton.Location = new Point(544, 32);
+        AddGameButton.Name = "AddGameButton";
+        AddGameButton.Size = new Size(56, 23);
+        AddGameButton.TabIndex = 8;
+        AddGameButton.Text = "Add...";
+        AddGameButton.UseVisualStyleBackColor = true;
+        // 
+        // EditGameButton
+        // 
+        EditGameButton.Location = new Point(600, 32);
+        EditGameButton.Name = "EditGameButton";
+        EditGameButton.Size = new Size(64, 23);
+        EditGameButton.TabIndex = 8;
+        EditGameButton.Text = "Edit...";
+        EditGameButton.UseVisualStyleBackColor = true;
+        // 
+        // RemoveGameButton
+        // 
+        RemoveGameButton.Location = new Point(664, 32);
+        RemoveGameButton.Name = "RemoveGameButton";
+        RemoveGameButton.Size = new Size(80, 23);
+        RemoveGameButton.TabIndex = 8;
+        RemoveGameButton.Text = "Remove...";
+        RemoveGameButton.UseVisualStyleBackColor = true;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(881, 771);
+        Controls.Add(GamesGroupBox);
         Controls.Add(StoredSaveDeleteButton);
         Controls.Add(RefreshButton);
-        Controls.Add(ThiefGameBrowseButton);
-        Controls.Add(GameSaveDirectoryLabel);
-        Controls.Add(ThiefGameTextBox);
         Controls.Add(InGameSavesLabel);
         Controls.Add(StoredSavesLabel);
         Controls.Add(CopyToStoreButton);
@@ -224,6 +280,8 @@ sealed partial class MainForm
         Text = "Dark Save Manager";
         FormClosing += MainForm_FormClosing;
         FormClosed += MainForm_FormClosed;
+        GamesGroupBox.ResumeLayout(false);
+        GamesGroupBox.PerformLayout();
         ResumeLayout(false);
         PerformLayout();
     }
@@ -244,4 +302,9 @@ sealed partial class MainForm
     private Button ThiefGameBrowseButton;
     private Button RefreshButton;
     private Button StoredSaveDeleteButton;
+    private GroupBox GamesGroupBox;
+    private ComboBox GamesComboBox;
+    private Button RemoveGameButton;
+    private Button EditGameButton;
+    private Button AddGameButton;
 }
