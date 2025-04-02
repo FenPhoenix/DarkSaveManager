@@ -26,7 +26,7 @@ public sealed partial class MainForm : Form
             InGameSavesTreeView.Nodes.Clear();
             foreach (SaveData? saveData in saveDataList)
             {
-                InGameSavesTreeView.Nodes.Add(saveData != null ? saveData.FriendlySaveName : "< EMPTY >");
+                InGameSavesTreeView.Nodes.Add(saveData?.FriendlySaveName ?? "< EMPTY >");
             }
         }
         finally
