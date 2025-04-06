@@ -175,10 +175,10 @@ public sealed partial class MainForm : Form
 
     private void StoredSavesTreeView_ItemDrag(object sender, ItemDragEventArgs e)
     {
-        if (e.Item != null)
-        {
-            DoDragDrop(e.Item, DragDropEffects.Move);
-        }
+        if (e.Button != MouseButtons.Left) return;
+        if (e.Item == null) return;
+
+        DoDragDrop(e.Item, DragDropEffects.Move);
     }
 
     private void InGameSavesTreeView_DragOver(object sender, DragEventArgs e)
@@ -208,10 +208,10 @@ public sealed partial class MainForm : Form
 
     private void InGameSavesTreeView_ItemDrag(object sender, ItemDragEventArgs e)
     {
-        if (e.Item != null)
-        {
-            DoDragDrop(e.Item, DragDropEffects.Move | DragDropEffects.Copy);
-        }
+        if (e.Button != MouseButtons.Left) return;
+        if (e.Item == null) return;
+
+        DoDragDrop(e.Item, DragDropEffects.Move | DragDropEffects.Copy);
     }
 
     private void StoredSavesTreeView_DragOver(object sender, DragEventArgs e)
