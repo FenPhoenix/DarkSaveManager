@@ -1,6 +1,4 @@
-﻿using StreamWriter = System.IO.StreamWriter;
-
-namespace DarkSaveManager;
+﻿namespace DarkSaveManager;
 
 internal sealed class ConfigData
 {
