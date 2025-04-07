@@ -22,9 +22,9 @@ internal static class ConfigIni
         BindingFlags.Public |
         BindingFlags.NonPublic;
 
-    private static void SetEnumValue<T>(string value, Type type, ref T configField)
+    private static void SetEnumValue<T>(string value, ref T configField) where T : notnull
     {
-        if (type.GetField(value, _bFlagsEnum)?.GetValue(null) is T finalValue)
+        if (typeof(T).GetField(value, _bFlagsEnum)?.GetValue(null) is T finalValue)
         {
             configField = finalValue;
         }
@@ -44,7 +44,7 @@ internal static class ConfigIni
                 }
                 else if (lineT.TryGetValueO("VisualTheme=", out value))
                 {
-                    SetEnumValue(value, typeof(VisualTheme), ref Config.VisualTheme);
+                    SetEnumValue(value, ref Config.VisualTheme);
                 }
             }
         }
