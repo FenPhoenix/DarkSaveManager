@@ -1,11 +1,13 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using DarkSaveManager.Forms.CustomControls;
 using DarkSaveManager.Forms.WinFormsNative;
 using Microsoft.VisualBasic.FileIO;
 
 namespace DarkSaveManager.Forms;
 
-public sealed partial class MainForm : DarkFormBase, IEventDisabler
+public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFilter
 {
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public int EventsDisabled { get; set; }
@@ -28,6 +30,13 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler
         {
             VisualThemeCheckBox.Checked = Config.DarkMode;
         }
+    }
+
+    protected override void OnLoad(EventArgs e)
+    {
+        base.OnLoad(e);
+
+        Application.AddMessageFilter(this);
     }
 
     protected override void OnShown(EventArgs e)
@@ -60,6 +69,114 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler
             }
         }
         base.WndProc(ref m);
+    }
+
+    private bool ModalDialogUp() => !CanFocus;
+
+    internal bool CursorOverControl(Control control, bool fullArea = false)
+    {
+        if (!control.Visible || !control.Enabled) return false;
+
+        Point rpt = PointToClient(control.PointToScreen(Point.Empty));
+        Size rcs = fullArea ? control.Size : control.ClientSize;
+
+        Point ptc = this.ClientCursorPos();
+
+        // Don't create eleventy billion Rectangle objects per second
+        return ptc.X >= rpt.X && ptc.X < rpt.X + rcs.Width &&
+               ptc.Y >= rpt.Y && ptc.Y < rpt.Y + rcs.Height;
+    }
+
+    public bool PreFilterMessage(ref Message m)
+    {
+        const bool BlockMessage = true;
+        const bool PassMessageOn = false;
+
+        static bool TryGetHWndFromMousePos(Message msg, out IntPtr result, [NotNullWhen(true)] out Control? control)
+        {
+            Point pos = new(Native.SignedLOWORD(msg.LParam), Native.SignedHIWORD(msg.LParam));
+            result = Native.WindowFromPoint(pos);
+            control = Control.FromHandle(result);
+            return control != null;
+        }
+
+        // This allows controls to be scrolled with the mousewheel when the mouse is over them, without
+        // needing to actually be focused. Vital for a good user experience.
+
+        #region Mouse
+
+        if (m.Msg == Native.WM_MOUSEWHEEL)
+        {
+            // IMPORTANT (PreFilterMessage):
+            // Do this check inside each if block rather than above, because the message may not
+            // be a mousemove message, and in that case we'd be trying to get a window point from a random
+            // value, and that causes the min,max,close button flickering.
+            if (!TryGetHWndFromMousePos(m, out IntPtr hWnd, out Control? controlOver)) return PassMessageOn;
+
+            int delta = Native.SignedHIWORD(m.WParam);
+            if (controlOver is DarkComboBox { SuppressScrollWheelValueChange: true, Focused: false } cb)
+            {
+                if (cb.Parent is { IsHandleCreated: true })
+                {
+                    Native.SendMessageW(cb.Parent.Handle, m.Msg, m.WParam, m.LParam);
+                }
+                else
+                {
+                    return BlockMessage;
+                }
+            }
+            else
+            {
+                Native.SendMessageW(hWnd, m.Msg, m.WParam, m.LParam);
+            }
+            return BlockMessage;
+        }
+        else if (m.Msg == Native.WM_MOUSEHWHEEL)
+        {
+            if (!TryGetHWndFromMousePos(m, out _, out _)) return PassMessageOn;
+        }
+        // NC = Non-Client, ie. the mouse was in a non-client area of the control
+        else if (m.Msg is Native.WM_MOUSEMOVE or Native.WM_NCMOUSEMOVE)
+        {
+            if (ModalDialogUp()) return PassMessageOn;
+
+            Control? control = Control.FromHandle(Native.WindowFromPoint(Cursor.Position));
+            if (control is ToolStripDropDown) return PassMessageOn;
+        }
+        else if (m.Msg is
+                 Native.WM_LBUTTONDOWN or Native.WM_NCLBUTTONDOWN or
+                 Native.WM_MBUTTONDOWN or Native.WM_NCMBUTTONDOWN or
+                 Native.WM_RBUTTONDOWN or Native.WM_NCRBUTTONDOWN or
+                 Native.WM_LBUTTONDBLCLK or Native.WM_NCLBUTTONDBLCLK or
+                 Native.WM_MBUTTONDBLCLK or Native.WM_NCMBUTTONDBLCLK or
+                 Native.WM_RBUTTONDBLCLK or Native.WM_NCRBUTTONDBLCLK or
+                 Native.WM_LBUTTONUP or Native.WM_NCLBUTTONUP or
+                 Native.WM_MBUTTONUP or Native.WM_NCMBUTTONUP or
+                 Native.WM_RBUTTONUP or Native.WM_NCRBUTTONUP)
+        {
+            if (ModalDialogUp()) return PassMessageOn;
+        }
+        #endregion
+        #region Keys
+        // To handle alt presses, we have to handle WM_SYSKEYDOWN, which handles alt and F10. Sure why not.
+        else if (m.Msg is Native.WM_SYSKEYDOWN or Native.WM_SYSKEYUP)
+        {
+            int wParam = (int)m.WParam;
+            if (ModifierKeys == Keys.Alt && wParam == (int)Keys.F4)
+            {
+                return PassMessageOn;
+            }
+        }
+        // Any other keys have to use this.
+        else if (m.Msg == Native.WM_KEYDOWN)
+        {
+        }
+        else if (m.Msg == Native.WM_KEYUP)
+        {
+        }
+        #endregion
+
+        return PassMessageOn;
     }
 
     public override void RespondToSystemThemeChange() => SetTheme(Config.VisualTheme);
@@ -151,6 +268,7 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler
 
     private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
     {
+        Application.RemoveMessageFilter(this);
     }
 
     private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
