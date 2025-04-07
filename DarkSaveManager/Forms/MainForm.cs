@@ -30,6 +30,13 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler
         }
     }
 
+    protected override void OnShown(EventArgs e)
+    {
+        base.OnShown(e);
+
+        StartupState = false;
+    }
+
     protected override void WndProc(ref Message m)
     {
         if (!StartupState)
@@ -79,7 +86,7 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler
                     theme: theme,
                     excludePredicate: static x => x is SplitterPanel,
                     createControlHandles: createControlHandles,
-                    createHandlePredicate: _ => true,
+                    createHandlePredicate: static _ => true,
                     capacity: 150
                 );
             }

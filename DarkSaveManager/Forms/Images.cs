@@ -84,43 +84,6 @@ public static class Images
 {
     #region Path points and types
 
-    #region Magnifying glass
-
-    /*
-    These could be deflate-compressed to save space, or I could scrap the points and just draw a few shapes
-    on the GraphicsPath if I could figure out how to union them together (rather than one cutting a piece
-    out of the other like it does currently) and that would save the most space. Wouldn't necessarily work
-    for every possible image, but some of them at least would be amenable to that.
-    Regardless, with this empty magnifying glass path, I can get 13 images worth of mileage out of it by
-    itself or in combination with +, -, and reset-zoom symbols. So I get my space's worth out of this one
-    for sure.
-    (this array init code was generated)
-    */
-    private static readonly float[] _magnifierEmptyPoints =
-    {
-        59.19173f, 0f, 26.60027f, -2.65E-06f, 0f, 26.60027f, 0f, 59.19173f, 0f, 91.7832f, 26.60027f,
-        118.383f, 59.19173f, 118.3829f, 70.74734f, 118.3829f, 81.54756f, 115.036f, 90.67818f, 109.2667f,
-        113.498f, 132.0865f, 118.3931f, 136.9816f, 126.2747f, 136.9816f, 131.1698f, 132.0865f, 131.6421f,
-        131.6142f, 136.5372f, 126.7191f, 136.5372f, 118.8375f, 131.6421f, 113.9424f, 108.921f, 91.2213f,
-        114.9029f, 81.97736f, 118.3829f, 70.97697f, 118.3829f, 59.19173f, 118.3829f, 26.60027f, 91.7832f, 0f,
-        59.19173f, 0f, 59.19173f, 16.70131f, 82.75785f, 16.70131f, 101.6816f, 35.62561f, 101.6816f,
-        59.19174f, 101.6816f, 82.75784f, 82.75786f, 101.6837f, 59.19173f, 101.6837f, 35.62562f, 101.6837f,
-        16.69924f, 82.75786f, 16.69924f, 59.19174f, 16.69924f, 35.62562f, 35.62562f, 16.70131f, 59.19173f,
-        16.70131f, 59.19173f, 16.70131f,
-    };
-
-    private static readonly byte[] _magnifierEmptyTypes = MakeTypeArray(
-        (3, 9, 0, 1),
-        (3, 3, -1, 1),
-        (3, 3, -1, 1),
-        (3, 5, -1, 131),
-        (3, 12, 0, 129));
-
-    private static GraphicsPath? _magnifierEmptyGPath;
-    private static GraphicsPath MagnifierEmptyGPath => _magnifierEmptyGPath ??= MakeGraphicsPath(_magnifierEmptyPoints, _magnifierEmptyTypes);
-
-    #endregion
-
     #region Update arrow
 
     private static readonly float[] _updateArrowPoints =
@@ -163,24 +126,6 @@ public static class Images
 
     #region Vector points
 
-    #region Play arrow
-
-    private static readonly Point[] _playArrowPoints =
-    {
-        new Point(15, 5),
-        new Point(29, 17),
-        new Point(15, 29),
-    };
-
-    private static readonly PointF[] _playOriginalArrowPoints =
-    {
-        new PointF(17.5f, 7.5f),
-        new PointF(28.5f, 17),
-        new PointF(17.5f, 26.5f),
-    };
-
-    #endregion
-
     #region Plus / ex
 
     private static readonly Rectangle[] _plusRects = new Rectangle[2];
@@ -189,70 +134,11 @@ public static class Images
 
     #region Hamburger
 
-    private static readonly Rectangle[] _hamRects_fmTabsMenu =
-    {
-        new Rectangle(2, 3, 14, 2),
-        new Rectangle(2, 9, 14, 2),
-        new Rectangle(2, 15, 14, 2),
-    };
-
     private static readonly Rectangle[] _hamRects24 =
     {
         new Rectangle(5, 5, 14, 2),
         new Rectangle(5, 11, 14, 2),
         new Rectangle(5, 17, 14, 2),
-    };
-
-    #endregion
-
-    #region Web search
-
-    private static readonly RectangleF[] _webSearchRects =
-    {
-        new Rectangle(12, 11, 19, 2),
-        new RectangleF(10, 16.5f, 23, 2),
-        new Rectangle(12, 22, 19, 2),
-    };
-
-    #endregion
-
-    #region Readme fullscreen
-
-    private static readonly Point[] _readmeFullScreenTopLeft =
-    {
-        new Point(0, 0),
-        new Point(7, 0),
-        new Point(7, 3),
-        new Point(3, 3),
-        new Point(3, 7),
-        new Point(0, 7),
-    };
-    private static readonly Point[] _readmeFullScreenTopRight =
-    {
-        new Point(14, 0),
-        new Point(21, 0),
-        new Point(21, 7),
-        new Point(18, 7),
-        new Point(18, 3),
-        new Point(14, 3),
-    };
-    private static readonly Point[] _readmeFullScreenBottomLeft =
-    {
-        new Point(0, 14),
-        new Point(3, 14),
-        new Point(3, 18),
-        new Point(7, 18),
-        new Point(7, 21),
-        new Point(0, 21),
-    };
-    private static readonly Point[] _readmeFullScreenBottomRight =
-    {
-        new Point(18, 14),
-        new Point(21, 14),
-        new Point(21, 21),
-        new Point(14, 21),
-        new Point(14, 18),
-        new Point(18, 18),
     };
 
     #endregion
@@ -396,121 +282,9 @@ public static class Images
         }
     }
 
-    private static readonly ThemedBrush _greenCircleBrush = new(
-        color: Color.FromArgb(65, 173, 73),
-        colorDark: Color.FromArgb(68, 178, 68));
-
     private static readonly ThemedBrush _deleteFromDBBrush = new(
         color: Color.FromArgb(135, 0, 0),
         colorDark: Color.FromArgb(209, 70, 70));
-
-    #region Finished states
-
-    // Variations in image widths (34,35,36) are intentional to keep the same dimensions as the old raster images
-    // used to have, so that the new vector ones are drop-in replacements.
-    private static readonly FillAndOutlineBrushes[] _finishedOnCheckBrushes =
-    {
-        new(outline: Color.FromArgb(3, 100, 1),
-            outlineDark: Color.FromArgb(3, 100, 1),
-            fill: Color.FromArgb(0, 170, 0),
-            fillDark: Color.FromArgb(68, 178, 68),
-            width: 34),
-
-        new(outline: Color.FromArgb(196, 157, 2),
-            outlineDark: Color.FromArgb(139, 111, 0),
-            fill: Color.FromArgb(255, 210, 0),
-            fillDark: Color.FromArgb(212, 187, 73),
-            width: 35),
-
-        new(outline: Color.FromArgb(135, 2, 2),
-            outlineDark: Color.FromArgb(118, 14, 14),
-            fill: Color.FromArgb(216, 0, 0),
-            fillDark: Color.FromArgb(209, 70, 70),
-            width: 35),
-
-        new(outline: Color.FromArgb(19, 1, 100),
-            outlineDark: Color.FromArgb(28, 76, 153),
-            fill: Color.FromArgb(0, 53, 226),
-            fillDark: Color.FromArgb(34, 148, 228),
-            width: 34),
-    };
-
-    private static readonly FillAndOutlineBrushes _unknownCheckBrush = new(
-        outline: Color.FromArgb(100, 100, 100),
-        fill: Color.FromArgb(170, 170, 170)
-    );
-
-    private static readonly SolidBrush _finishedOnFilterOutlineOnlyBrushDark = new SolidBrush(Color.FromArgb(132, 206, 252));
-
-    private static readonly FillAndOutlineBrushes _finishedOnFilterBrush = new(
-        outline: Color.FromArgb(14, 101, 139),
-        outlineDark: Color.FromArgb(89, 159, 203),
-        fill: Color.FromArgb(89, 159, 203),
-        fillDark: Color.FromArgb(89, 159, 203)
-    );
-
-    #endregion
-
-    #region Calendars
-
-    private static readonly ThemedBrush _calendarBackgroundBrush = new(
-        brush: Brushes.White,
-        colorDark: Color.FromArgb(220, 220, 220));
-
-    private static readonly ThemedPen _calendarBackgroundPen = new(
-        pen: Pens.White,
-        colorDark: Color.FromArgb(220, 220, 220)
-    );
-
-    #region Release date
-
-    private static readonly Color _releaseDateForegroundDark = Color.FromArgb(0, 150, 255);
-    private static readonly Color _releaseDateForeground = Color.FromArgb(28, 132, 204);
-
-    private static readonly ThemedBrush _releaseDateForegroundBrush = new(
-        color: _releaseDateForeground,
-        colorDark: _releaseDateForegroundDark
-    );
-
-    private static readonly ThemedPen _releaseDateForegroundPen = new(
-        color: _releaseDateForeground,
-        colorDark: _releaseDateForegroundDark
-    );
-
-    #endregion
-
-    #region Last played
-
-    private static readonly Color _lastPlayedForegroundDark = Color.FromArgb(19, 172, 48);
-    private static readonly Color _lastPlayedForeground = Color.FromArgb(0, 163, 0);
-
-    private static readonly ThemedBrush _lastPlayedForegroundBrush = new(
-        color: _lastPlayedForeground,
-        colorDark: _lastPlayedForegroundDark
-    );
-
-    private static readonly ThemedPen _lastPlayedForegroundPen = new(
-        color: _lastPlayedForeground,
-        colorDark: _lastPlayedForegroundDark
-    );
-
-    #endregion
-
-    #endregion
-
-    #region Stars
-
-    private static readonly FillAndOutlineBrushes _starBrush = new(
-        outline: Color.FromArgb(192, 113, 0),
-        outlineDark: Color.FromArgb(200, 128, 26),
-        fill: Color.FromArgb(255, 180, 0),
-        fillDark: Color.FromArgb(228, 185, 82)
-    );
-
-    private static readonly ThemedBrush _starEmptyBrush =
-        new(brush: Brushes.White, brushDark: DarkColors.Fen_DarkBackgroundBrush);
-
-    #endregion
 
     #region Separators
 
@@ -539,46 +313,6 @@ public static class Images
 
     #endregion
 
-    #region Web search
-
-    private static readonly ThemedPen _webSearchCirclePen = new(
-        color: _al_LightBlue,
-        colorDark: _al_LightBlueDark,
-        width: 2
-    );
-
-    private static readonly Pen _webSearchCircleDisabledPen = new Pen(SystemColors.ControlDark, 2);
-
-    #endregion
-
-    #region Play arrow
-
-    private static readonly Color _playArrowColor = Color.FromArgb(45, 154, 47);
-    private static readonly Color _playArrowColor_Dark = Color.FromArgb(91, 176, 93);
-
-    private static readonly ThemedBrush _playArrowBrush = new(
-        color: _playArrowColor,
-        colorDark: _playArrowColor_Dark
-    );
-
-    private static readonly ThemedPen _playArrowPen = new(
-        color: _playArrowColor,
-        colorDark: _playArrowColor_Dark,
-        width: 2.5f
-    );
-
-    // Explicit pen for this because we need to set the width
-    private static readonly Pen _playArrowDisabledPen = new Pen(SystemColors.ControlDark, 2.5f);
-
-    #endregion
-
-    #region Reset layout
-
-    private static readonly Pen _resetLayoutPen = new Pen(Color.FromArgb(123, 123, 123), 2);
-    private static readonly Pen _resetLayoutPenDisabled = new Pen(SystemColors.ControlDark, 2);
-
-    #endregion
-
     private static Brush BlackForegroundBrush => Config.DarkMode ? DarkColors.Fen_DarkForegroundBrush : Brushes.Black;
     private static Pen BlackForegroundPen => Config.DarkMode ? DarkColors.Fen_DarkForegroundPen : Pens.Black;
 
@@ -593,41 +327,6 @@ public static class Images
     #region Raster
 
     #region Image arrays
-
-    internal sealed class RatingIconsArray
-    {
-        // 0-10, and we don't count -1 (no rating) because that's handled elsewhere
-        internal const int Length = 11;
-
-        private readonly Bitmap?[] _array = new Bitmap?[Length];
-
-        public Bitmap? this[int index]
-        {
-            get => _array[index];
-            set => _array[index] = value;
-        }
-
-        public void Reset() => _array.DisposeAll();
-    }
-
-    internal sealed class FinishedOnIconsArray
-    {
-        internal const int Length = 16;
-
-        private readonly Bitmap?[] _array = new Bitmap?[Length];
-
-        public Bitmap? this[uint index]
-        {
-            get => _array[index];
-            set => _array[index] = value;
-        }
-
-        public void Reset()
-        {
-            _array.DisposeRange(1, Length);
-            _array[0] = Blank;
-        }
-    }
 
     // Load this only once, as it's transparent and so doesn't have to change with the theme
     internal static readonly Bitmap Blank = new(1, 1, PixelFormat.Format32bppPArgb);

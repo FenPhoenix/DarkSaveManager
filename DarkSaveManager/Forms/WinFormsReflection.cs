@@ -4,12 +4,6 @@
 // Tested working for .NET 9
 internal static class WinFormsReflection
 {
-    internal const string DGV_SelectionModeBackingFieldName =
-        "_selectionMode";
-
-    internal const string DGV_TypeInternalBackingFieldName =
-        "_typeInternal";
-
     internal const string ToolTipNativeWindow_ToolTipFieldName =
         "_toolTip";
 
