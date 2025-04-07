@@ -47,6 +47,7 @@ public readonly ref struct RentScope<T>
     }
 }
 
+[PublicAPI]
 public static class ByteSize
 {
     public const int KB = 1024;
@@ -96,18 +97,6 @@ public enum MBoxButton
     Yes,
     No,
     Cancel,
-}
-
-public enum ProgressSizeMode
-{
-    Single,
-    Double,
-}
-
-public enum ProgressType
-{
-    Determinate,
-    Indeterminate,
 }
 
 public enum VisualTheme

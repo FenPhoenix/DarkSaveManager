@@ -229,7 +229,7 @@ internal static class Win32ThemeHooks
 
     private static int GetSysColor_Hooked(int nIndex)
     {
-        return !_disableHookedTheming && Global.Config.DarkMode
+        return !_disableHookedTheming && Config.DarkMode
             ? SysColorOverride switch
             {
                 Override.Full => nIndex switch
@@ -266,7 +266,7 @@ internal static class Win32ThemeHooks
 
     private static IntPtr GetSysColorBrush_Hooked(int nIndex)
     {
-        return !_disableHookedTheming && Global.Config.DarkMode
+        return !_disableHookedTheming && Config.DarkMode
             ? SysColorOverride switch
             {
                 Override.Full => nIndex switch
@@ -449,7 +449,7 @@ internal static class Win32ThemeHooks
     #region Trackbar
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool TrackBarEnabled() => Global.Config.DarkMode;
+    private static bool TrackBarEnabled() => Config.DarkMode;
 
     private static bool TrackBar_TryGetThemeColor(
         int iPartId,
@@ -525,7 +525,7 @@ internal static class Win32ThemeHooks
     // It's okay because we don't use them anywhere else, but yeah.
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool TabScrollButtonsEnabled() => Global.Config.DarkMode;
+    private static bool TabScrollButtonsEnabled() => Config.DarkMode;
 
     private static bool TabScrollButtons_TryDrawThemeBackground(
         IntPtr hdc,
@@ -584,7 +584,7 @@ internal static class Win32ThemeHooks
     #region ScrollBar
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool ScrollBarEnabled() => Global.Config.DarkMode || (WinVersion.Is11OrAbove && !Native.HighContrastEnabled());
+    private static bool ScrollBarEnabled() => Config.DarkMode || (WinVersion.Is11OrAbove && !Native.HighContrastEnabled());
 
     private static bool ScrollBar_TryDrawThemeBackground(
         IntPtr hdc,
@@ -592,7 +592,7 @@ internal static class Win32ThemeHooks
         int iStateId,
         ref Native.RECT pRect)
     {
-        bool usingLightMode = WinVersion.Is11OrAbove && !Global.Config.DarkMode && !Native.HighContrastEnabled();
+        bool usingLightMode = WinVersion.Is11OrAbove && !Config.DarkMode && !Native.HighContrastEnabled();
 
         using Graphics g = Graphics.FromHdc(hdc);
 
@@ -815,7 +815,7 @@ internal static class Win32ThemeHooks
         // This is the ONLY way that works on those versions.
         if (iPartId == Native.SBP_CORNER && iPropId == Native.TMT_FILLCOLOR)
         {
-            bool usingLightMode = WinVersion.Is11OrAbove && !Global.Config.DarkMode && !Native.HighContrastEnabled();
+            bool usingLightMode = WinVersion.Is11OrAbove && !Config.DarkMode && !Native.HighContrastEnabled();
 
             Color color = usingLightMode
                 ? SystemColors.Control
@@ -836,7 +836,7 @@ internal static class Win32ThemeHooks
     #region ToolTip
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool ToolTipEnabled() => Global.Config.DarkMode && ControlUtils.ToolTipsReflectable;
+    private static bool ToolTipEnabled() => Config.DarkMode && ControlUtils.ToolTipsReflectable;
 
     private static bool ToolTip_TryDrawThemeBackground(
         IntPtr hdc,
@@ -904,7 +904,7 @@ internal static class Win32ThemeHooks
             g,
             direction,
             rect,
-            pen: Global.Config.DarkMode ? DarkColors.LightTextPen : SystemPens.WindowText);
+            pen: Config.DarkMode ? DarkColors.LightTextPen : SystemPens.WindowText);
 
         return true;
     }

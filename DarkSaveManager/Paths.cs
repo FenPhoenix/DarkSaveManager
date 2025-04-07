@@ -1,6 +1,4 @@
-﻿using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
-namespace DarkSaveManager;
+﻿namespace DarkSaveManager;
 
 internal static class Paths
 {
