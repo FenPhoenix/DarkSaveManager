@@ -13,13 +13,49 @@ internal static partial class Utils
 
     internal static bool EqualsI(this ReadOnlySpan<char> first, ReadOnlySpan<char> second) => first.Equals(second, StringComparison.OrdinalIgnoreCase);
 
+    internal static bool StartsWithO(this ReadOnlySpan<char> first, ReadOnlySpan<char> second) => first.StartsWith(second, StringComparison.Ordinal);
+
+    internal static bool StartsWithO(this string first, string second) => first.StartsWith(second, StringComparison.Ordinal);
+
     internal static bool StartsWithI(this string first, string second) => first.StartsWith(second, StringComparison.OrdinalIgnoreCase);
 
     internal static bool StartsWithI(this ReadOnlySpan<char> first, ReadOnlySpan<char> second) => first.StartsWith(second, StringComparison.OrdinalIgnoreCase);
 
+    internal static bool EndsWithO(this string first, string second) => first.EndsWith(second, StringComparison.Ordinal);
+
+    internal static bool EndsWithO(this ReadOnlySpan<char> first, ReadOnlySpan<char> second) => first.EndsWith(second, StringComparison.Ordinal);
+
     internal static bool EndsWithI(this string first, string second) => first.EndsWith(second, StringComparison.OrdinalIgnoreCase);
 
     internal static bool EndsWithI(this ReadOnlySpan<char> first, ReadOnlySpan<char> second) => first.EndsWith(second, StringComparison.OrdinalIgnoreCase);
+
+    internal static bool TryGetValueO(this string line, string key, out string value)
+    {
+        if (line.StartsWithO(key))
+        {
+            value = line.Substring(key.Length);
+            return true;
+        }
+        else
+        {
+            value = "";
+            return false;
+        }
+    }
+
+    internal static bool TryGetValueI(this string line, string key, out string value)
+    {
+        if (line.StartsWithI(key))
+        {
+            value = line.Substring(key.Length);
+            return true;
+        }
+        else
+        {
+            value = "";
+            return false;
+        }
+    }
 
     #region Empty / whitespace checks
 

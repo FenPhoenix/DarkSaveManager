@@ -1,4 +1,6 @@
-﻿namespace DarkSaveManager;
+﻿using System.Reflection;
+
+namespace DarkSaveManager;
 
 internal sealed class ConfigData
 {
@@ -14,6 +16,20 @@ internal sealed class ConfigData
 
 internal static class ConfigIni
 {
+    private const BindingFlags _bFlagsEnum =
+        BindingFlags.Instance |
+        BindingFlags.Static |
+        BindingFlags.Public |
+        BindingFlags.NonPublic;
+
+    private static void SetEnumValue<T>(string value, Type type, ref T configField)
+    {
+        if (type.GetField(value, _bFlagsEnum)?.GetValue(null) is T finalValue)
+        {
+            configField = finalValue;
+        }
+    }
+
     internal static void ReadIni()
     {
         try
@@ -22,9 +38,13 @@ internal static class ConfigIni
             while (sr.ReadLine() is { } line)
             {
                 string lineT = line.Trim();
-                if (lineT.StartsWithI("GamePath="))
+                if (lineT.TryGetValueO("GamePath=", out string value))
                 {
-                    Config.GamePath = lineT.Substring("GamePath=".Length);
+                    Config.GamePath = value;
+                }
+                else if (lineT.TryGetValueO("VisualTheme=", out value))
+                {
+                    SetEnumValue(value, typeof(VisualTheme), ref Config.VisualTheme);
                 }
             }
         }
@@ -38,5 +58,6 @@ internal static class ConfigIni
     {
         using StreamWriter sw = new(Paths.ConfigIni);
         sw.WriteLine("GamePath=" + Config.GamePath);
+        sw.WriteLine("VisualTheme=" + Config.VisualTheme);
     }
 }
