@@ -108,7 +108,20 @@ internal sealed class DarkTreeView : TreeView, IDarkable, IUpdateRegion
         // Don't use e.Bounds, keep e.Node.Bounds.
         if (e.Node != null)
         {
-            e.Graphics.FillRectangle(backColorBrush, e.Node.Bounds);
+            if (FullRowSelect)
+            {
+                Rectangle fullWidthRect = new(
+                    ClientRectangle.Left,
+                    e.Node.Bounds.Top,
+                    ClientRectangle.Width,
+                    e.Node.Bounds.Height);
+                e.Graphics.FillRectangle(backColorBrush, fullWidthRect);
+            }
+            else
+            {
+                e.Graphics.FillRectangle(backColorBrush, e.Node.Bounds);
+            }
+
             TextRenderer.DrawText(e.Graphics, e.Node.Text, Font, e.Node.Bounds, textColor, TextFormatFlags.NoPrefix);
         }
 
