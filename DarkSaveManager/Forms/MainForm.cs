@@ -339,7 +339,7 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler
     private void ThiefGameBrowseButton_Click(object sender, EventArgs e)
     {
         using FolderBrowserDialog d = new();
-        if (d.ShowDialog() != DialogResult.OK) return;
+        if (d.ShowDialogDark(this) != DialogResult.OK) return;
         ThiefGameTextBox.Text = d.SelectedPath;
         UpdateGamePath();
     }
