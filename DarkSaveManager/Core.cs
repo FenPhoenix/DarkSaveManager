@@ -2,11 +2,14 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+using DarkSaveManager.Forms;
+using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 
 namespace DarkSaveManager;
 
 // TODO: Make UI properly blank/disable etc. when game path is invalid/blank/nonexistent
+// TODO: Fill out personal post-build copy bat file
 
 internal static class Core
 {
@@ -622,6 +625,41 @@ internal static class Core
                 }
                 _count--;
             }
+        }
+    }
+
+    internal static VisualTheme GetSystemTheme()
+    {
+        try
+        {
+            // Firefox uses this registry key, so if it's reliable enough for them, it's reliable enough for me
+            object? appsUseLightThemeKey = Registry.GetValue(
+                keyName: @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize",
+                valueName: "AppsUseLightTheme",
+                defaultValue: "");
+
+            if (appsUseLightThemeKey is int keyInt)
+            {
+                return keyInt == 0 ? VisualTheme.Dark : VisualTheme.Classic;
+            }
+        }
+        catch
+        {
+            return VisualTheme.Classic;
+        }
+
+        return VisualTheme.Classic;
+    }
+
+    internal static void OpenLogFile()
+    {
+        try
+        {
+            Utils.ProcessStart_UseShellExecute(Paths.LogFile);
+        }
+        catch
+        {
+            View.ShowAlert($"Unable to open log file.{NL}{NL}" + Paths.LogFile, LText.AlertMessages.Error);
         }
     }
 }

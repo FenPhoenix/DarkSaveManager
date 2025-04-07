@@ -1,4 +1,6 @@
-﻿namespace DarkSaveManager;
+﻿using DarkSaveManager.Forms.CustomControls;
+
+namespace DarkSaveManager.Forms;
 
 sealed partial class MainForm
 {
@@ -28,26 +30,28 @@ sealed partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
-        Test1Button = new Button();
-        InGameSavesTreeView = new TreeView();
-        StoredSavesTreeView = new TreeView();
-        MoveToStoreButton = new Button();
-        CopyToStoreButton = new Button();
-        StoredSavesLabel = new Label();
-        InGameSavesLabel = new Label();
-        Test2Button = new Button();
-        SwapToGameButton = new Button();
-        ThiefGameTextBox = new TextBox();
-        GameSaveDirectoryLabel = new Label();
-        ThiefGameBrowseButton = new Button();
-        RefreshButton = new Button();
-        StoredSaveDeleteButton = new Button();
-        GamesGroupBox = new GroupBox();
-        GamesComboBox = new ComboBox();
-        AddGameButton = new Button();
-        EditGameButton = new Button();
-        RemoveGameButton = new Button();
+        Test1Button = new DarkButton();
+        InGameSavesTreeView = new DarkTreeView();
+        StoredSavesTreeView = new DarkTreeView();
+        MoveToStoreButton = new DarkButton();
+        CopyToStoreButton = new DarkButton();
+        StoredSavesLabel = new DarkLabel();
+        InGameSavesLabel = new DarkLabel();
+        Test2Button = new DarkButton();
+        SwapToGameButton = new DarkButton();
+        ThiefGameTextBox = new DarkTextBox();
+        GameSaveDirectoryLabel = new DarkLabel();
+        ThiefGameBrowseButton = new DarkButton();
+        RefreshButton = new DarkButton();
+        StoredSaveDeleteButton = new DarkButton();
+        GamesGroupBox = new DarkGroupBox();
+        RemoveGameButton = new DarkButton();
+        EditGameButton = new DarkButton();
+        AddGameButton = new DarkButton();
+        GamesComboBox = new DarkComboBox();
+        EverythingPanel = new Panel();
         GamesGroupBox.SuspendLayout();
+        EverythingPanel.SuspendLayout();
         SuspendLayout();
         // 
         // Test1Button
@@ -57,7 +61,6 @@ sealed partial class MainForm
         Test1Button.Size = new Size(75, 23);
         Test1Button.TabIndex = 0;
         Test1Button.Text = "Test1";
-        Test1Button.UseVisualStyleBackColor = true;
         Test1Button.Click += Test1Button_Click;
         // 
         // InGameSavesTreeView
@@ -107,7 +110,6 @@ sealed partial class MainForm
         MoveToStoreButton.Size = new Size(75, 23);
         MoveToStoreButton.TabIndex = 2;
         MoveToStoreButton.Text = "<- Move";
-        MoveToStoreButton.UseVisualStyleBackColor = true;
         MoveToStoreButton.Click += MoveToStoreButton_Click;
         // 
         // CopyToStoreButton
@@ -118,7 +120,6 @@ sealed partial class MainForm
         CopyToStoreButton.Size = new Size(75, 23);
         CopyToStoreButton.TabIndex = 2;
         CopyToStoreButton.Text = "<- Copy";
-        CopyToStoreButton.UseVisualStyleBackColor = true;
         CopyToStoreButton.Click += CopyToStoreButton_Click;
         // 
         // StoredSavesLabel
@@ -146,7 +147,6 @@ sealed partial class MainForm
         Test2Button.Size = new Size(75, 23);
         Test2Button.TabIndex = 0;
         Test2Button.Text = "Test2";
-        Test2Button.UseVisualStyleBackColor = true;
         Test2Button.Click += Test2Button_Click;
         // 
         // SwapToGameButton
@@ -157,7 +157,6 @@ sealed partial class MainForm
         SwapToGameButton.Size = new Size(75, 23);
         SwapToGameButton.TabIndex = 2;
         SwapToGameButton.Text = "Swap ->";
-        SwapToGameButton.UseVisualStyleBackColor = true;
         SwapToGameButton.Click += SwapToGameButton_Click;
         // 
         // ThiefGameTextBox
@@ -184,7 +183,6 @@ sealed partial class MainForm
         ThiefGameBrowseButton.Size = new Size(83, 23);
         ThiefGameBrowseButton.TabIndex = 6;
         ThiefGameBrowseButton.Text = "Browse...";
-        ThiefGameBrowseButton.UseVisualStyleBackColor = true;
         ThiefGameBrowseButton.Click += ThiefGameBrowseButton_Click;
         // 
         // RefreshButton
@@ -194,7 +192,6 @@ sealed partial class MainForm
         RefreshButton.Size = new Size(75, 23);
         RefreshButton.TabIndex = 7;
         RefreshButton.Text = "Refresh";
-        RefreshButton.UseVisualStyleBackColor = true;
         RefreshButton.Click += RefreshButton_Click;
         // 
         // StoredSaveDeleteButton
@@ -204,7 +201,6 @@ sealed partial class MainForm
         StoredSaveDeleteButton.Size = new Size(24, 23);
         StoredSaveDeleteButton.TabIndex = 8;
         StoredSaveDeleteButton.Text = "X";
-        StoredSaveDeleteButton.UseVisualStyleBackColor = true;
         StoredSaveDeleteButton.Click += StoredSaveDeleteButton_Click;
         // 
         // GamesGroupBox
@@ -223,23 +219,13 @@ sealed partial class MainForm
         GamesGroupBox.TabStop = false;
         GamesGroupBox.Text = "Games";
         // 
-        // GamesComboBox
+        // RemoveGameButton
         // 
-        GamesComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-        GamesComboBox.FormattingEnabled = true;
-        GamesComboBox.Location = new Point(16, 32);
-        GamesComboBox.Name = "GamesComboBox";
-        GamesComboBox.Size = new Size(528, 23);
-        GamesComboBox.TabIndex = 7;
-        // 
-        // AddGameButton
-        // 
-        AddGameButton.Location = new Point(544, 32);
-        AddGameButton.Name = "AddGameButton";
-        AddGameButton.Size = new Size(56, 23);
-        AddGameButton.TabIndex = 8;
-        AddGameButton.Text = "Add...";
-        AddGameButton.UseVisualStyleBackColor = true;
+        RemoveGameButton.Location = new Point(664, 32);
+        RemoveGameButton.Name = "RemoveGameButton";
+        RemoveGameButton.Size = new Size(80, 23);
+        RemoveGameButton.TabIndex = 8;
+        RemoveGameButton.Text = "Remove...";
         // 
         // EditGameButton
         // 
@@ -248,63 +234,81 @@ sealed partial class MainForm
         EditGameButton.Size = new Size(64, 23);
         EditGameButton.TabIndex = 8;
         EditGameButton.Text = "Edit...";
-        EditGameButton.UseVisualStyleBackColor = true;
         // 
-        // RemoveGameButton
+        // AddGameButton
         // 
-        RemoveGameButton.Location = new Point(664, 32);
-        RemoveGameButton.Name = "RemoveGameButton";
-        RemoveGameButton.Size = new Size(80, 23);
-        RemoveGameButton.TabIndex = 8;
-        RemoveGameButton.Text = "Remove...";
-        RemoveGameButton.UseVisualStyleBackColor = true;
+        AddGameButton.Location = new Point(544, 32);
+        AddGameButton.Name = "AddGameButton";
+        AddGameButton.Size = new Size(56, 23);
+        AddGameButton.TabIndex = 8;
+        AddGameButton.Text = "Add...";
+        // 
+        // GamesComboBox
+        // 
+        GamesComboBox.FormattingEnabled = true;
+        GamesComboBox.Location = new Point(16, 32);
+        GamesComboBox.Name = "GamesComboBox";
+        GamesComboBox.Size = new Size(528, 23);
+        GamesComboBox.TabIndex = 7;
+        // 
+        // EverythingPanel
+        // 
+        EverythingPanel.Controls.Add(GamesGroupBox);
+        EverythingPanel.Controls.Add(Test1Button);
+        EverythingPanel.Controls.Add(StoredSaveDeleteButton);
+        EverythingPanel.Controls.Add(Test2Button);
+        EverythingPanel.Controls.Add(RefreshButton);
+        EverythingPanel.Controls.Add(InGameSavesTreeView);
+        EverythingPanel.Controls.Add(InGameSavesLabel);
+        EverythingPanel.Controls.Add(StoredSavesTreeView);
+        EverythingPanel.Controls.Add(StoredSavesLabel);
+        EverythingPanel.Controls.Add(MoveToStoreButton);
+        EverythingPanel.Controls.Add(CopyToStoreButton);
+        EverythingPanel.Controls.Add(SwapToGameButton);
+        EverythingPanel.Dock = DockStyle.Fill;
+        EverythingPanel.Location = new Point(0, 0);
+        EverythingPanel.Name = "EverythingPanel";
+        EverythingPanel.Size = new Size(881, 771);
+        EverythingPanel.TabIndex = 10;
         // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(881, 771);
-        Controls.Add(GamesGroupBox);
-        Controls.Add(StoredSaveDeleteButton);
-        Controls.Add(RefreshButton);
-        Controls.Add(InGameSavesLabel);
-        Controls.Add(StoredSavesLabel);
-        Controls.Add(CopyToStoreButton);
-        Controls.Add(SwapToGameButton);
-        Controls.Add(MoveToStoreButton);
-        Controls.Add(StoredSavesTreeView);
-        Controls.Add(InGameSavesTreeView);
-        Controls.Add(Test2Button);
-        Controls.Add(Test1Button);
+        Controls.Add(EverythingPanel);
         Name = "MainForm";
+        ShowInTaskbar = true;
         Text = "Dark Save Manager";
         FormClosing += MainForm_FormClosing;
         FormClosed += MainForm_FormClosed;
         GamesGroupBox.ResumeLayout(false);
         GamesGroupBox.PerformLayout();
+        EverythingPanel.ResumeLayout(false);
+        EverythingPanel.PerformLayout();
         ResumeLayout(false);
-        PerformLayout();
     }
 
     #endregion
 
-    private Button Test1Button;
-    private TreeView InGameSavesTreeView;
-    private TreeView StoredSavesTreeView;
-    private Button MoveToStoreButton;
-    private Button CopyToStoreButton;
-    private Label StoredSavesLabel;
-    private Label InGameSavesLabel;
-    private Button Test2Button;
-    private Button SwapToGameButton;
-    private TextBox ThiefGameTextBox;
-    private Label GameSaveDirectoryLabel;
-    private Button ThiefGameBrowseButton;
-    private Button RefreshButton;
-    private Button StoredSaveDeleteButton;
-    private GroupBox GamesGroupBox;
-    private ComboBox GamesComboBox;
-    private Button RemoveGameButton;
-    private Button EditGameButton;
-    private Button AddGameButton;
+    private DarkButton Test1Button;
+    private DarkTreeView InGameSavesTreeView;
+    private DarkTreeView StoredSavesTreeView;
+    private DarkButton MoveToStoreButton;
+    private DarkButton CopyToStoreButton;
+    private DarkLabel StoredSavesLabel;
+    private DarkLabel InGameSavesLabel;
+    private DarkButton Test2Button;
+    private DarkButton SwapToGameButton;
+    private DarkTextBox ThiefGameTextBox;
+    private DarkLabel GameSaveDirectoryLabel;
+    private DarkButton ThiefGameBrowseButton;
+    private DarkButton RefreshButton;
+    private DarkButton StoredSaveDeleteButton;
+    private DarkGroupBox GamesGroupBox;
+    private DarkComboBox GamesComboBox;
+    private DarkButton RemoveGameButton;
+    private DarkButton EditGameButton;
+    private DarkButton AddGameButton;
+    private Panel EverythingPanel;
 }

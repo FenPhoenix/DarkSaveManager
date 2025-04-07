@@ -46,3 +46,72 @@ public readonly ref struct RentScope<T>
         ArrayPool<T>.Shared.Return(Array);
     }
 }
+
+public static class ByteSize
+{
+    public const int KB = 1024;
+    public const int MB = KB * 1024;
+    public const int GB = MB * 1024;
+}
+
+public static class ByteLengths
+{
+    public const int Byte = 1;
+    public const int Int16 = 2;
+    public const int Int32 = 4;
+    public const int Int64 = 8;
+}
+
+public enum SortDirection
+{
+    Ascending,
+    Descending,
+}
+
+public enum WindowState
+{
+    Normal,
+    Minimized,
+    Maximized,
+}
+
+public enum MBoxIcon
+{
+    None,
+    Error,
+    Warning,
+    Information,
+}
+
+public enum MBoxButtons
+{
+    OK,
+    OKCancel,
+    YesNoCancel,
+    YesNo,
+}
+
+public enum MBoxButton
+{
+    Yes,
+    No,
+    Cancel,
+}
+
+public enum ProgressSizeMode
+{
+    Single,
+    Double,
+}
+
+public enum ProgressType
+{
+    Determinate,
+    Indeterminate,
+}
+
+public enum VisualTheme
+{
+    Classic,
+    Dark,
+}

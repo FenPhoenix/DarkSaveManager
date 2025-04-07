@@ -4,6 +4,12 @@ internal sealed class ConfigData
 {
     // TODO: Add support for unlimited game paths (including multiple copies of one game)
     internal string GamePath = "";
+
+    internal bool DarkMode => VisualTheme == VisualTheme.Dark;
+
+    internal VisualTheme VisualTheme = VisualTheme.Dark;
+
+    internal bool FollowSystemTheme = false;
 }
 
 internal static class ConfigIni

@@ -1,13 +1,95 @@
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using DarkSaveManager.Forms.WinFormsNative;
 using Microsoft.VisualBasic.FileIO;
 
-namespace DarkSaveManager;
+namespace DarkSaveManager.Forms;
 
-public sealed partial class MainForm : Form
+public sealed partial class MainForm : DarkFormBase
 {
+    // Stupid hack for if event handlers need to know
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    internal bool StartupState { get; private set; } = true;
+
+    private readonly IDarkable[] _lazyLoadedControls;
+
     public MainForm()
     {
+        _lazyLoadedControls = Array.Empty<IDarkable>();
+
         InitializeComponent();
+
+        SetTheme(Config.VisualTheme, startup: true, createControlHandles: true);
+    }
+
+    protected override void WndProc(ref Message m)
+    {
+        if (!StartupState)
+        {
+            if (m.Msg == Native.WM_THEMECHANGED)
+            {
+                Win32ThemeHooks.ReloadTheme();
+            }
+            else if (ControlUtils.SystemThemeHasChanged(ref m, out VisualTheme newTheme))
+            {
+                Config.VisualTheme = newTheme;
+                SetTheme(Config.VisualTheme);
+                m.Result = IntPtr.Zero;
+
+                List<IntPtr> handles = Native.GetProcessWindowHandles();
+                foreach (IntPtr handle in handles)
+                {
+                    Control? control = Control.FromHandle(handle);
+                    if (control is DarkFormBase form) form.RespondToSystemThemeChange();
+                }
+            }
+        }
+        base.WndProc(ref m);
+    }
+
+    public override void RespondToSystemThemeChange() => SetTheme(Config.VisualTheme);
+
+    public void SetTheme(VisualTheme theme) => SetTheme(theme, startup: false, createControlHandles: false);
+
+    private void SetTheme(VisualTheme theme, bool startup, bool createControlHandles)
+    {
+        bool darkMode = theme == VisualTheme.Dark;
+
+        try
+        {
+            if (!startup) EverythingPanel.SuspendDrawing();
+
+            if (startup && !darkMode)
+            {
+                ControlUtils.CreateAllControlsHandles(
+                    control: this,
+                    createHandlePredicate: static _ => true);
+            }
+            else
+            {
+                SetThemeBase(
+                    theme: theme,
+                    excludePredicate: static x => x is SplitterPanel,
+                    createControlHandles: createControlHandles,
+                    createHandlePredicate: _ => true,
+                    capacity: 150
+                );
+            }
+
+            if (!startup) ControlUtils.RecreateAllToolTipHandles();
+
+            if (!startup || darkMode)
+            {
+                foreach (IDarkable lazyLoadedControl in _lazyLoadedControls)
+                {
+                    lazyLoadedControl.DarkModeEnabled = darkMode;
+                }
+            }
+        }
+        finally
+        {
+            if (!startup) EverythingPanel.ResumeDrawing();
+        }
     }
 
     private void Test1Button_Click(object sender, EventArgs e)
