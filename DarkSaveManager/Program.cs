@@ -12,6 +12,8 @@ file static class Program
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+        Logger.SetLogFile(Paths.LogFile);
+
         // To customize application configuration such as set high DPI settings or default font,
         // see https://aka.ms/applicationconfiguration.
         ApplicationConfiguration.Initialize();
