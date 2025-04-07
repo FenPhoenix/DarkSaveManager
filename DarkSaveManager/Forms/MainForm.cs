@@ -5,8 +5,11 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace DarkSaveManager.Forms;
 
-public sealed partial class MainForm : DarkFormBase
+public sealed partial class MainForm : DarkFormBase, IEventDisabler
 {
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public int EventsDisabled { get; set; }
+
     // Stupid hack for if event handlers need to know
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     internal bool StartupState { get; private set; } = true;
@@ -20,6 +23,11 @@ public sealed partial class MainForm : DarkFormBase
         InitializeComponent();
 
         SetTheme(Config.VisualTheme, startup: true, createControlHandles: true);
+
+        using (new DisableEvents(this))
+        {
+            VisualThemeCheckBox.Checked = Config.DarkMode;
+        }
     }
 
     protected override void WndProc(ref Message m)
@@ -362,5 +370,14 @@ public sealed partial class MainForm : DarkFormBase
 
             Core.RefreshViewAllLists();
         }
+    }
+
+    // TODO: Make this a nicer looking standard "sun/moon" light/dark switch
+    private void VisualThemeCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+        if (EventsDisabled > 0) return;
+
+        Config.VisualTheme = VisualThemeCheckBox.Checked ? VisualTheme.Dark : VisualTheme.Classic;
+        SetTheme(Config.VisualTheme);
     }
 }

@@ -50,15 +50,16 @@ sealed partial class MainForm
         AddGameButton = new DarkButton();
         GamesComboBox = new DarkComboBox();
         EverythingPanel = new Panel();
+        VisualThemeCheckBox = new DarkCheckBox();
         GamesGroupBox.SuspendLayout();
         EverythingPanel.SuspendLayout();
         SuspendLayout();
         // 
         // Test1Button
         // 
-        Test1Button.Location = new Point(792, 8);
+        Test1Button.Location = new Point(784, 40);
         Test1Button.Name = "Test1Button";
-        Test1Button.Size = new Size(75, 23);
+        Test1Button.Size = new Size(83, 23);
         Test1Button.TabIndex = 0;
         Test1Button.Text = "Test1";
         Test1Button.Click += Test1Button_Click;
@@ -142,9 +143,9 @@ sealed partial class MainForm
         // 
         // Test2Button
         // 
-        Test2Button.Location = new Point(792, 32);
+        Test2Button.Location = new Point(784, 64);
         Test2Button.Name = "Test2Button";
-        Test2Button.Size = new Size(75, 23);
+        Test2Button.Size = new Size(83, 23);
         Test2Button.TabIndex = 0;
         Test2Button.Text = "Test2";
         Test2Button.Click += Test2Button_Click;
@@ -163,7 +164,7 @@ sealed partial class MainForm
         // 
         ThiefGameTextBox.Location = new Point(16, 96);
         ThiefGameTextBox.Name = "ThiefGameTextBox";
-        ThiefGameTextBox.Size = new Size(648, 23);
+        ThiefGameTextBox.Size = new Size(640, 23);
         ThiefGameTextBox.TabIndex = 4;
         ThiefGameTextBox.Leave += ThiefGameTextBox_Leave;
         // 
@@ -178,7 +179,7 @@ sealed partial class MainForm
         // 
         // ThiefGameBrowseButton
         // 
-        ThiefGameBrowseButton.Location = new Point(664, 96);
+        ThiefGameBrowseButton.Location = new Point(656, 96);
         ThiefGameBrowseButton.Name = "ThiefGameBrowseButton";
         ThiefGameBrowseButton.Size = new Size(83, 23);
         ThiefGameBrowseButton.TabIndex = 6;
@@ -187,9 +188,9 @@ sealed partial class MainForm
         // 
         // RefreshButton
         // 
-        RefreshButton.Location = new Point(792, 72);
+        RefreshButton.Location = new Point(784, 104);
         RefreshButton.Name = "RefreshButton";
-        RefreshButton.Size = new Size(75, 23);
+        RefreshButton.Size = new Size(83, 23);
         RefreshButton.TabIndex = 7;
         RefreshButton.Text = "Refresh";
         RefreshButton.Click += RefreshButton_Click;
@@ -214,14 +215,14 @@ sealed partial class MainForm
         GamesGroupBox.Controls.Add(ThiefGameBrowseButton);
         GamesGroupBox.Location = new Point(16, 16);
         GamesGroupBox.Name = "GamesGroupBox";
-        GamesGroupBox.Size = new Size(760, 144);
+        GamesGroupBox.Size = new Size(752, 144);
         GamesGroupBox.TabIndex = 9;
         GamesGroupBox.TabStop = false;
         GamesGroupBox.Text = "Games";
         // 
         // RemoveGameButton
         // 
-        RemoveGameButton.Location = new Point(664, 32);
+        RemoveGameButton.Location = new Point(656, 32);
         RemoveGameButton.Name = "RemoveGameButton";
         RemoveGameButton.Size = new Size(80, 23);
         RemoveGameButton.TabIndex = 8;
@@ -229,7 +230,7 @@ sealed partial class MainForm
         // 
         // EditGameButton
         // 
-        EditGameButton.Location = new Point(600, 32);
+        EditGameButton.Location = new Point(592, 32);
         EditGameButton.Name = "EditGameButton";
         EditGameButton.Size = new Size(64, 23);
         EditGameButton.TabIndex = 8;
@@ -237,7 +238,7 @@ sealed partial class MainForm
         // 
         // AddGameButton
         // 
-        AddGameButton.Location = new Point(544, 32);
+        AddGameButton.Location = new Point(536, 32);
         AddGameButton.Name = "AddGameButton";
         AddGameButton.Size = new Size(56, 23);
         AddGameButton.TabIndex = 8;
@@ -248,11 +249,12 @@ sealed partial class MainForm
         GamesComboBox.FormattingEnabled = true;
         GamesComboBox.Location = new Point(16, 32);
         GamesComboBox.Name = "GamesComboBox";
-        GamesComboBox.Size = new Size(528, 23);
+        GamesComboBox.Size = new Size(520, 23);
         GamesComboBox.TabIndex = 7;
         // 
         // EverythingPanel
         // 
+        EverythingPanel.Controls.Add(VisualThemeCheckBox);
         EverythingPanel.Controls.Add(GamesGroupBox);
         EverythingPanel.Controls.Add(Test1Button);
         EverythingPanel.Controls.Add(StoredSaveDeleteButton);
@@ -270,6 +272,16 @@ sealed partial class MainForm
         EverythingPanel.Name = "EverythingPanel";
         EverythingPanel.Size = new Size(881, 771);
         EverythingPanel.TabIndex = 10;
+        // 
+        // VisualThemeCheckBox
+        // 
+        VisualThemeCheckBox.AutoSize = true;
+        VisualThemeCheckBox.Location = new Point(784, 16);
+        VisualThemeCheckBox.Name = "VisualThemeCheckBox";
+        VisualThemeCheckBox.Size = new Size(84, 19);
+        VisualThemeCheckBox.TabIndex = 10;
+        VisualThemeCheckBox.Text = "Dark mode";
+        VisualThemeCheckBox.CheckedChanged += VisualThemeCheckBox_CheckedChanged;
         // 
         // MainForm
         // 
@@ -311,4 +323,5 @@ sealed partial class MainForm
     private DarkButton EditGameButton;
     private DarkButton AddGameButton;
     private Panel EverythingPanel;
+    private DarkCheckBox VisualThemeCheckBox;
 }
