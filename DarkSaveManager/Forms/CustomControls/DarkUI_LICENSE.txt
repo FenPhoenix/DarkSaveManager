@@ -1,4 +1,4 @@
-﻿AngelLoader uses modified code from DarkUI (https://github.com/RobinPerris/DarkUI) in its custom control set.
+﻿DarkSaveManager uses modified code from DarkUI (https://github.com/RobinPerris/DarkUI) in its custom control set.
 
 MIT License
 
