@@ -10,9 +10,6 @@ namespace DarkSaveManager.Forms.WinFormsNative;
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
 internal static partial class Native
 {
-    private const int WM_USER = 0x0400;
-    internal const int WM_REFLECT = WM_USER + 0x1C00;
-    internal const int WM_NOTIFY = 0x004E;
     internal const int WM_SETREDRAW = 0x000B;
     internal const int WM_NCPAINT = 0x0085;
     internal const int WM_PAINT = 0x000F;
@@ -144,26 +141,6 @@ internal static partial class Native
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool ReleaseDC(IntPtr hWnd, IntPtr hDC);
 
-    public sealed class GraphicsContext_Ref : IDisposable
-    {
-        private readonly IntPtr _hWnd;
-        private readonly IntPtr _dc;
-        public readonly Graphics G;
-
-        public GraphicsContext_Ref(IntPtr hWnd)
-        {
-            _hWnd = hWnd;
-            _dc = GetWindowDC(_hWnd);
-            G = Graphics.FromHdc(_dc);
-        }
-
-        public void Dispose()
-        {
-            G.Dispose();
-            ReleaseDC(_hWnd, _dc);
-        }
-    }
-
     [StructLayout(LayoutKind.Auto)]
     public readonly ref struct GraphicsContext
     {
@@ -193,14 +170,6 @@ internal static partial class Native
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static partial bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-    internal static UIntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
-    {
-        return GetWindowLongPtr64(hWnd, nIndex);
-    }
-
-    [LibraryImport("user32.dll", EntryPoint = "GetWindowLongPtrW")]
-    private static partial UIntPtr GetWindowLongPtr64(IntPtr hWnd, int nIndex);
-
     [LibraryImport("user32.dll", EntryPoint = "WindowFromPoint")]
     private static partial IntPtr WindowFromPoint_Native(POINT pt);
 
@@ -219,9 +188,9 @@ internal static partial class Native
     internal static int MAKELONG(int low, int high) => (high << 16) | (low & 0xffff);
     internal static int HIWORD(int n) => (n >> 16) & 0xffff;
     internal static int HIWORD(IntPtr n) => HIWORD(unchecked((int)(long)n));
-#endif
-    internal static int LOWORD(int n) => n & 0xffff;
     internal static int LOWORD(IntPtr n) => LOWORD(unchecked((int)(long)n));
+    internal static int LOWORD(int n) => n & 0xffff;
+#endif
     internal static int SignedHIWORD(IntPtr n) => SignedHIWORD(unchecked((int)(long)n));
     internal static int SignedLOWORD(IntPtr n) => SignedLOWORD(unchecked((int)(long)n));
     internal static int SignedHIWORD(int n) => (int)(short)((n >> 16) & 0xffff);
@@ -251,8 +220,6 @@ internal static partial class Native
 
     // NC prefix means the mouse was over a non-client area
 
-    internal const int WM_SETCURSOR = 0x20;
-
     internal const int WM_MOUSEWHEEL = 0x20A;
     internal const int WM_MOUSEHWHEEL = 0x020E; // Mousewheel tilt
 
@@ -275,9 +242,6 @@ internal static partial class Native
     internal const int WM_RBUTTONDOWN = 0x204;
     internal const int WM_NCRBUTTONDOWN = 0xA4;
 
-    internal const int WM_XBUTTONDOWN = 0x020B;
-    //internal const int WM_NCXBUTTONDOWN = 0x0AB;
-
     internal const int WM_LBUTTONDBLCLK = 0x203;
     internal const int WM_NCLBUTTONDBLCLK = 0xA3;
     internal const int WM_MBUTTONDBLCLK = 0x209;
@@ -293,9 +257,6 @@ internal static partial class Native
     internal const int WM_SYSKEYDOWN = 0x104;
     internal const int WM_SYSKEYUP = 0x105;
     internal const int WM_KEYUP = 0x101;
-
-    // MK_ only to be used in mouse messages
-    internal const int MK_CONTROL = 0x8;
 
     // VK_ only to be used in keyboard messages
 #if false
@@ -317,20 +278,15 @@ internal static partial class Native
 
     #region Scrolling / scroll bars
 
-    internal const uint WS_VSCROLL = 0x00200000;
-
     internal const uint OBJID_HSCROLL = 0xFFFFFFFA;
     internal const uint OBJID_VSCROLL = 0xFFFFFFFB;
 
     internal const int SB_HORZ = 0;
     internal const int SB_VERT = 1;
 
-    internal const int WM_SCROLL = 0x114;
     internal const int WM_VSCROLL = 0x115;
     internal const int WM_HSCROLL = 0x114;
 
-    internal const int SB_LINELEFT = 0;
-    internal const int SB_LINERIGHT = 1;
 #if false
     internal const int SB_LINEUP = 0;
     internal const int SB_LINEDOWN = 1;
@@ -648,140 +604,6 @@ internal static partial class Native
 
     #endregion
 
-    #region Aero Snap window restore hack
-
-    /// <summary>
-    /// Contains information about the placement of a window on the screen.
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    [PublicAPI]
-    private struct WINDOWPLACEMENT
-    {
-        /// <summary>
-        /// The length of the structure, in bytes. Before calling the GetWindowPlacement or SetWindowPlacement functions, set this member to sizeof(WINDOWPLACEMENT).
-        /// <para>
-        /// GetWindowPlacement and SetWindowPlacement fail if this member is not set correctly.
-        /// </para>
-        /// </summary>
-        internal uint Length;
-
-        /// <summary>
-        /// Specifies flags that control the position of the minimized window and the method by which the window is restored.
-        /// </summary>
-        internal readonly uint Flags;
-
-        /// <summary>
-        /// The current show state of the window.
-        /// </summary>
-        internal readonly uint ShowCmd;
-
-        /// <summary>
-        /// The coordinates of the window's upper-left corner when the window is minimized.
-        /// </summary>
-        internal readonly POINT MinPosition;
-
-        /// <summary>
-        /// The coordinates of the window's upper-left corner when the window is maximized.
-        /// </summary>
-        internal readonly POINT MaxPosition;
-
-        /// <summary>
-        /// The window's coordinates when the window is in the restored position.
-        /// </summary>
-        internal readonly RECT NormalPosition;
-
-        /// <summary>
-        /// Gets the default (empty) value.
-        /// </summary>
-        internal static WINDOWPLACEMENT Default
-        {
-            get
-            {
-                WINDOWPLACEMENT result = new();
-                result.Length = (uint)Marshal.SizeOf(result);
-                return result;
-            }
-        }
-    }
-
-    [LibraryImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
-
-    internal static bool TryGetRealWindowBounds(Form form, out Rectangle rect)
-    {
-        WINDOWPLACEMENT wp = WINDOWPLACEMENT.Default;
-        bool success = GetWindowPlacement(form.Handle, ref wp);
-        if (success)
-        {
-            rect = wp.NormalPosition.ToRectangle();
-            return true;
-        }
-        else
-        {
-            rect = Rectangle.Empty;
-            return false;
-        }
-    }
-
-    #endregion
-
-    #region Get system metrics
-
-    // SystemInformation gives us most of these, but it doesn't give us iPaddedBorderWidth and we need that.
-    // All this just for that one thing.
-
-    private const int LF_FACESIZE = 32;
-
-    private const int SPI_GETNONCLIENTMETRICS = 0x0029;
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    [PublicAPI]
-    internal unsafe struct LOGFONTW
-    {
-        internal int lfHeight;
-        internal int lfWidth;
-        internal int lfEscapement;
-        internal int lfOrientation;
-        internal int lfWeight;
-        internal byte lfItalic;
-        internal byte lfUnderline;
-        internal byte lfStrikeOut;
-        internal byte lfCharSet;
-        internal byte lfOutPrecision;
-        internal byte lfClipPrecision;
-        internal byte lfQuality;
-        internal byte lfPitchAndFamily;
-        internal fixed char lfFaceName[LF_FACESIZE];
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    [PublicAPI]
-    internal struct NONCLIENTMETRICSW
-    {
-        internal int cbSize;
-        internal int iBorderWidth;
-        internal int iScrollWidth;
-        internal int iScrollHeight;
-        internal int iCaptionWidth;
-        internal int iCaptionHeight;
-        internal LOGFONTW lfCaptionFont;
-        internal int iSMCaptionWidth;
-        internal int iSMCaptionHeight;
-        internal LOGFONTW lfSMCaptionFont;
-        internal int iMenuWidth;
-        internal int iMenuHeight;
-        internal LOGFONTW lfMenuFont;
-        internal LOGFONTW lfStatusFont;
-        internal LOGFONTW lfMessageFont;
-        internal int iPaddedBorderWidth;
-    }
-
-    [LibraryImport("user32.dll")]
-    private static partial int SystemParametersInfoW(int uiAction, int uiParam, ref NONCLIENTMETRICSW pvParam, int fWinIni);
-
-    #endregion
-
     #region High contrast code from .NET latest runtime
 
     // Licensed to the .NET Foundation under one or more agreements.
@@ -790,14 +612,6 @@ internal static partial class Native
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool SystemParametersInfoW(SystemParametersAction uiAction, uint uiParam, ref HIGHCONTRASTW pvParam, uint fWinIni);
-
-    public static NONCLIENTMETRICSW GetNonClientMetrics()
-    {
-        NONCLIENTMETRICSW metrics = new() { cbSize = Marshal.SizeOf(typeof(NONCLIENTMETRICSW)) };
-        SystemParametersInfoW(SPI_GETNONCLIENTMETRICS, 0, ref metrics, 0);
-        return metrics;
-    }
-
 
     [Flags]
     private enum HIGHCONTRASTW_FLAGS : uint
@@ -844,32 +658,4 @@ internal static partial class Native
     }
 
     #endregion
-
-    #region Cursor
-
-    [PublicAPI]
-    internal struct ICONINFO
-    {
-        public bool fIcon;
-        public int xHotspot;
-        public int yHotspot;
-        public IntPtr hbmMask;
-        public IntPtr hbmColor;
-    }
-
-    [DllImport("user32.dll", ExactSpelling = true)]
-    internal static extern IntPtr CreateIconIndirect(ref ICONINFO icon);
-
-    [DllImport("user32.dll", ExactSpelling = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool GetIconInfo(IntPtr hIcon, ref ICONINFO pIconInfo);
-
-    [LibraryImport("gdi32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    internal static partial bool DeleteObject(IntPtr handle);
-
-    #endregion
-
-    [DllImport("user32.dll", ExactSpelling = true)]
-    internal static extern bool EnableWindow(HandleRef hWnd, bool enable);
 }

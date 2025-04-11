@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using DarkSaveManager.Forms.CustomControls;
 using DarkSaveManager.Forms.WinFormsNative;
-using DarkSaveManager.Forms.WinFormsNative.Taskbar;
 
 namespace DarkSaveManager.Forms;
 
@@ -24,39 +23,6 @@ internal static class ControlUtils
     {
         if (!control.IsHandleCreated || !control.Visible) return;
         Native.SendMessageW(control.Handle, Native.WM_SETREDRAW, true, IntPtr.Zero);
-        if (invalidateInsteadOfRefresh)
-        {
-            control.Invalidate();
-        }
-        else
-        {
-            control.Refresh();
-        }
-    }
-
-    internal static void ResumeDrawingAndFocusControl(
-        this Control control,
-        Control?[]? controlsToFocus,
-        bool invalidateInsteadOfRefresh = false)
-    {
-        if (!control.IsHandleCreated || !control.Visible) return;
-        Native.SendMessageW(control.Handle, Native.WM_SETREDRAW, true, IntPtr.Zero);
-
-        /*
-        Focus after the enable-redraw message but before the refresh.
-        If we put it before the enable-redraw message, the focus will be lost; if we put it after, there's a
-        short visible blip of the default focus before we change it.
-
-        Designed originally for the tab control, but use it for whatever...
-        */
-        if (controlsToFocus != null)
-        {
-            foreach (Control? c in controlsToFocus)
-            {
-                c?.Focus();
-            }
-        }
-
         if (invalidateInsteadOfRefresh)
         {
             control.Invalidate();
@@ -734,22 +700,6 @@ internal static class ControlUtils
         if (!WinVersion.SupportsPersistentToolTips)
         {
             toolTip.AutoPopDelay = 32767;
-        }
-    }
-
-    internal static void SetTaskBarState(this Form form, TaskbarStates states)
-    {
-        if (form.IsHandleCreated)
-        {
-            TaskBarProgress.SetState(form.Handle, states);
-        }
-    }
-
-    internal static void SetTaskBarValue(this Form form, int progressValue, int progressMax)
-    {
-        if (form.IsHandleCreated)
-        {
-            TaskBarProgress.SetValue(form.Handle, progressValue, progressMax);
         }
     }
 

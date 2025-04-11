@@ -90,31 +90,6 @@ internal readonly ref struct DisableEvents
 
 #endregion
 
-#region DisableZeroSelectCode
-
-public interface IZeroSelectCodeDisabler
-{
-    /// <summary>
-    /// True if greater than 0.
-    /// </summary>
-    int ZeroSelectCodeDisabled { get; set; }
-}
-
-[StructLayout(LayoutKind.Auto)]
-internal readonly ref struct DisableZeroSelectCode
-{
-    private readonly IZeroSelectCodeDisabler _obj;
-    internal DisableZeroSelectCode(IZeroSelectCodeDisabler obj)
-    {
-        _obj = obj;
-        _obj.ZeroSelectCodeDisabled++;
-    }
-
-    public void Dispose() => _obj.ZeroSelectCodeDisabled = (_obj.ZeroSelectCodeDisabled - 1).ClampToZero();
-}
-
-#endregion
-
 public interface IDarkable
 {
     bool DarkModeEnabled { set; }
@@ -140,27 +115,4 @@ public interface IListControlWithBackingItems : IUpdateRegion
 #endif
 
     #endregion
-}
-
-public interface IOptionallyLazyTabControl
-{
-    public bool Enabled { get; set; }
-    public TabPage? SelectedTab { get; set; }
-    public TabPage? DragTab { get; }
-    void ShowTab(TabPage tabPage, bool show);
-    int TabCount { get; }
-    bool TabPagesContains(TabPage tabPage);
-    Rectangle GetTabRect(int index);
-    Rectangle GetTabBarRect();
-    Rectangle ClientRectangle { get; }
-    Point ClientCursorPos();
-    int Width { get; }
-    int Height { get; }
-    int SelectedIndex { get; }
-    bool Focused { get; }
-    void DrawToBitmap(Bitmap bitmap, Rectangle targetBounds);
-    Point PointToClient(Point point);
-    void ResetTempDragData();
-    void RestoreBackedUpBackingTabs();
-    event TabControlEventHandler? Selected;
 }

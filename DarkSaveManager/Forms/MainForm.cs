@@ -113,7 +113,6 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
             // value, and that causes the min,max,close button flickering.
             if (!TryGetHWndFromMousePos(m, out IntPtr hWnd, out Control? controlOver)) return PassMessageOn;
 
-            int delta = Native.SignedHIWORD(m.WParam);
             if (controlOver is DarkComboBox { SuppressScrollWheelValueChange: true, Focused: false } cb)
             {
                 if (cb.Parent is { IsHandleCreated: true })

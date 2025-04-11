@@ -6,10 +6,4 @@ internal static class WinFormsReflection
 {
     internal const string ToolTipNativeWindow_ToolTipFieldName =
         "_toolTip";
-
-    internal const string Form_RestoredWindowBounds =
-        "_restoredWindowBounds";
-
-    internal const string Form_RestoredWindowBoundsSpecified =
-        "_restoredWindowBoundsSpecified";
 }

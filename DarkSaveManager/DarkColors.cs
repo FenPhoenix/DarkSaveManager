@@ -63,9 +63,6 @@ public static class DarkColors
     //public static readonly Pen CheckBoxPressedFillPen = new Pen(CheckBoxPressedFill);
     public static readonly SolidBrush CheckBoxPressedFillBrush = new SolidBrush(CheckBoxPressedFill);
 
-    public static readonly Color GLMLRed_Light = Color.Red;
-    public static readonly Color GLMLRed_Dark = Color.FromArgb(222, 73, 64);
-
     public static readonly Color Fen_DarkBackground = Color.FromArgb(32, 32, 32);
     public static readonly Color Fen_DarkForeground = Color.FromArgb(200, 200, 200);
 

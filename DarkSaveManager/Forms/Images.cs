@@ -84,20 +84,6 @@ public static class Images
 {
     #region Path points and types
 
-    #region Update arrow
-
-    private static readonly float[] _updateArrowPoints =
-    {
-        0,5, 5,0, 10,5, 6.5f,5, 6.5f,9, 3.5f,9, 3.5f,5,
-    };
-
-    private static readonly byte[] _updateArrowTypes = MakeTypeArray((1, 5, 0, 129));
-
-    private static GraphicsPath? _updateArrowGPath;
-    private static GraphicsPath UpdateArrowGPath => _updateArrowGPath ??= MakeGraphicsPath(_updateArrowPoints, _updateArrowTypes);
-
-    #endregion
-
     #region X symbol
 
     private static readonly float[] _xPoints =
@@ -149,143 +135,6 @@ public static class Images
 
     #region Colors / brushes / pens
 
-    private sealed class ThemedPen
-    {
-        private readonly Color _color;
-        private readonly Color _colorDark;
-
-        private readonly float _width;
-
-        private Pen? _pen;
-        private Pen? _penDark;
-        internal Pen Pen =>
-            Config.DarkMode
-                ? _penDark ??= new Pen(_colorDark, _width)
-                : _pen ??= new Pen(_color, _width);
-
-        internal ThemedPen(Color color, Color colorDark, float width = 1f)
-        {
-            _color = color;
-            _colorDark = colorDark;
-            _width = width;
-        }
-
-#if false
-        public ThemedPen(Color color, Pen penDark, float width = 1f)
-        {
-            _color = color;
-            _penDark = penDark;
-            _width = width;
-        }
-#endif
-
-        public ThemedPen(Pen pen, Color colorDark, float width = 1f)
-        {
-            _pen = pen;
-            _colorDark = colorDark;
-            _width = width;
-        }
-
-#if false
-        public ThemedPen(Pen pen, Pen penDark, float width = 1f)
-        {
-            _pen = pen;
-            _penDark = penDark;
-            _width = width;
-        }
-#endif
-    }
-
-    private sealed class ThemedBrush
-    {
-        private readonly Color _color;
-        private readonly Color _colorDark;
-
-        private Brush? _brush;
-        private Brush? _brushDark;
-        internal Brush Brush =>
-            Config.DarkMode
-                ? _brushDark ??= new SolidBrush(_colorDark)
-                : _brush ??= new SolidBrush(_color);
-
-        internal ThemedBrush(Color color, Color colorDark)
-        {
-            _color = color;
-            _colorDark = colorDark;
-        }
-
-#if false
-        public ThemedBrush(Color color, Brush brushDark)
-        {
-            _color = color;
-            _brushDark = brushDark;
-        }
-#endif
-
-        public ThemedBrush(Brush brush, Color colorDark)
-        {
-            _brush = brush;
-            _colorDark = colorDark;
-        }
-
-        public ThemedBrush(Brush brush, Brush brushDark)
-        {
-            _brush = brush;
-            _brushDark = brushDark;
-        }
-    }
-
-    private sealed class FillAndOutlineBrushes
-    {
-        private readonly Color _outlineColor;
-        private readonly Color _outlineColorDark;
-        private readonly Color _fillColor;
-        private readonly Color _fillColorDark;
-
-        private SolidBrush? _outline;
-        private SolidBrush? _outlineDark;
-        private SolidBrush? _fill;
-        private SolidBrush? _fillDark;
-
-        private readonly int _width;
-
-        internal FillAndOutlineBrushes(Color outline, Color outlineDark, Color fill, Color fillDark, int width)
-        {
-            _outlineColor = outline;
-            _outlineColorDark = outlineDark;
-            _fillColor = fill;
-            _fillColorDark = fillDark;
-            _width = width;
-        }
-
-        internal FillAndOutlineBrushes(Color outline, Color outlineDark, Color fill, Color fillDark)
-        {
-            _outlineColor = outline;
-            _outlineColorDark = outlineDark;
-            _fillColor = fill;
-            _fillColorDark = fillDark;
-        }
-
-        internal FillAndOutlineBrushes(Color outline, Color fill)
-        {
-            _outlineColor = outline;
-            _outlineColorDark = outline;
-            _fillColor = fill;
-            _fillColorDark = fill;
-        }
-
-        internal (SolidBrush Outline, SolidBrush Fill, int Width) GetData()
-        {
-            return Config.DarkMode
-                ? (_outlineDark ??= new SolidBrush(_outlineColorDark), _fillDark ??= new SolidBrush(_fillColorDark), Width: _width)
-                : (_outline ??= new SolidBrush(_outlineColor), _fill ??= new SolidBrush(_fillColor), Width: _width);
-        }
-    }
-
-    private static readonly ThemedBrush _deleteFromDBBrush = new(
-        color: Color.FromArgb(135, 0, 0),
-        colorDark: Color.FromArgb(209, 70, 70));
-
     #region Separators
 
     private static readonly Pen _sep1Pen = new Pen(Color.FromArgb(189, 189, 189));
@@ -301,20 +150,7 @@ public static class Images
 
     #endregion
 
-    #region AL Blue
-
-    private static readonly Color _al_LightBlue = Color.FromArgb(4, 125, 202);
-    private static readonly Color _al_LightBlueDark = Color.FromArgb(54, 146, 204);
-
-    private static readonly ThemedBrush _al_LightBlueBrush = new(
-        color: _al_LightBlue,
-        colorDark: _al_LightBlueDark
-    );
-
-    #endregion
-
     private static Brush BlackForegroundBrush => Config.DarkMode ? DarkColors.Fen_DarkForegroundBrush : Brushes.Black;
-    private static Pen BlackForegroundPen => Config.DarkMode ? DarkColors.Fen_DarkForegroundPen : Pens.Black;
 
     #region Arrows
 
@@ -727,41 +563,6 @@ public static class Images
             g.DrawLine(Sep2Pen, left + 1, y + 1, width, y + 1);
         }
     }
-
-    #endregion
-
-    #region Release date accuracy testing
-
-#if DateAccTest
-    private static Bitmap CreateDateAccuracyImage(DateAccuracy da)
-    {
-        AssertR(da != DateAccuracy.Null, "da is null");
-
-        Bitmap ret = new(21, 21, PixelFormat.Format32bppPArgb);
-        using Graphics g = Graphics.FromImage(ret);
-
-        Brush brush = da switch
-        {
-            DateAccuracy.Red => Brushes.Red,
-            DateAccuracy.Yellow => Brushes.Yellow,
-            _ => Brushes.Green,
-        };
-
-        g.FillRectangle(brush, 6, 6, 8, 8);
-        g.DrawRectangle(Pens.Black, 5, 5, 9, 9);
-
-        return ret;
-    }
-
-    private static Bitmap? _dateAccuracyRed;
-    public static Bitmap DateAccuracy_Red => _dateAccuracyRed ??= CreateDateAccuracyImage(DateAccuracy.Red);
-
-    private static Bitmap? _dateAccuracyYellow;
-    public static Bitmap DateAccuracy_Yellow => _dateAccuracyYellow ??= CreateDateAccuracyImage(DateAccuracy.Yellow);
-
-    private static Bitmap? _dateAccuracyGreen;
-    public static Bitmap DateAccuracy_Green => _dateAccuracyGreen ??= CreateDateAccuracyImage(DateAccuracy.Green);
-#endif
 
     #endregion
 }
