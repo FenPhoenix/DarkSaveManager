@@ -239,7 +239,7 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
             InGameSavesTreeView.Nodes.Clear();
             foreach (SaveData? saveData in saveDataList)
             {
-                InGameSavesTreeView.Nodes.Add(saveData?.FriendlySaveName ?? "< EMPTY >");
+                InGameSavesTreeView.Nodes.Add(saveData?.FriendlySaveName ?? LText.Global.EmptySaveSlot);
             }
         }
         finally

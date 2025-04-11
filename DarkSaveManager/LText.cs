@@ -14,5 +14,7 @@ internal static class LText
     {
         internal static readonly string OK = "OK";
         internal static readonly string SelectAll = "Select all";
+
+        internal static readonly string EmptySaveSlot = "< EMPTY >";
     }
 }
