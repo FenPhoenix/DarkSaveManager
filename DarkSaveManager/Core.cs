@@ -595,8 +595,8 @@ internal static class Core
         private static readonly Lock _lock = new();
         private static int _count;
 
-        private readonly bool oldGameEventWatchingValue;
-        private readonly bool oldStoreEventWatchingValue;
+        private readonly bool _oldGameEventWatchingValue;
+        private readonly bool _oldStoreEventWatchingValue;
 
         public DisableWatchers()
         {
@@ -604,8 +604,8 @@ internal static class Core
             {
                 if (_count == 0)
                 {
-                    oldGameEventWatchingValue = GameWatcher.EnableRaisingEvents;
-                    oldStoreEventWatchingValue = SaveStoreWatcher.EnableRaisingEvents;
+                    _oldGameEventWatchingValue = GameWatcher.EnableRaisingEvents;
+                    _oldStoreEventWatchingValue = SaveStoreWatcher.EnableRaisingEvents;
 
                     GameWatcher.EnableRaisingEvents = false;
                     SaveStoreWatcher.EnableRaisingEvents = false;
@@ -620,8 +620,8 @@ internal static class Core
             {
                 if (_count == 1)
                 {
-                    GameWatcher.EnableRaisingEvents = oldGameEventWatchingValue;
-                    SaveStoreWatcher.EnableRaisingEvents = oldStoreEventWatchingValue;
+                    GameWatcher.EnableRaisingEvents = _oldGameEventWatchingValue;
+                    SaveStoreWatcher.EnableRaisingEvents = _oldStoreEventWatchingValue;
                 }
                 _count--;
             }
