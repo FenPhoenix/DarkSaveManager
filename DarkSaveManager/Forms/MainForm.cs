@@ -504,4 +504,24 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
         Config.VisualTheme = VisualThemeCheckBox.Checked ? VisualTheme.Dark : VisualTheme.Classic;
         SetTheme(Config.VisualTheme);
     }
+
+    private void GamesComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+
+    private void AddGameButton_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void EditGameButton_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void RemoveGameButton_Click(object sender, EventArgs e)
+    {
+
+    }
 }

@@ -227,6 +227,7 @@ sealed partial class MainForm
         RemoveGameButton.Size = new Size(80, 23);
         RemoveGameButton.TabIndex = 8;
         RemoveGameButton.Text = "Remove...";
+        RemoveGameButton.Click += RemoveGameButton_Click;
         // 
         // EditGameButton
         // 
@@ -235,6 +236,7 @@ sealed partial class MainForm
         EditGameButton.Size = new Size(64, 23);
         EditGameButton.TabIndex = 8;
         EditGameButton.Text = "Edit...";
+        EditGameButton.Click += EditGameButton_Click;
         // 
         // AddGameButton
         // 
@@ -243,6 +245,7 @@ sealed partial class MainForm
         AddGameButton.Size = new Size(56, 23);
         AddGameButton.TabIndex = 8;
         AddGameButton.Text = "Add...";
+        AddGameButton.Click += AddGameButton_Click;
         // 
         // GamesComboBox
         // 
@@ -251,6 +254,7 @@ sealed partial class MainForm
         GamesComboBox.Name = "GamesComboBox";
         GamesComboBox.Size = new Size(520, 23);
         GamesComboBox.TabIndex = 7;
+        GamesComboBox.SelectedIndexChanged += GamesComboBox_SelectedIndexChanged;
         // 
         // EverythingPanel
         // 
