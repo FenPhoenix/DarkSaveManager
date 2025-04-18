@@ -42,14 +42,6 @@ internal static class Core
 
         ConfigIni.ReadIni();
 
-        try
-        {
-            GameWatcher.Path = Config.GamePath;
-        }
-        catch
-        {
-            // Dir doesn't exist; hold off till game path refresh
-        }
         GameWatcher.Filter = "*.sav";
         GameWatcher.NotifyFilter =
             NotifyFilters.LastWrite
@@ -60,7 +52,6 @@ internal static class Core
         GameWatcher.Deleted += GameWatcher_Changed;
         GameWatcher.Renamed += GameWatcher_Changed;
 
-        SaveStoreWatcher.Path = Paths.SaveStore;
         SaveStoreWatcher.Filter = "*.sav_*";
         SaveStoreWatcher.NotifyFilter =
             NotifyFilters.LastWrite
@@ -78,6 +69,8 @@ internal static class Core
 
         View.SetGamePathField(Config.GamePath);
 
+        UpdatePaths();
+
         try
         {
             GameWatcher.EnableRaisingEvents = true;
@@ -88,6 +81,23 @@ internal static class Core
         }
 
         SaveStoreWatcher.EnableRaisingEvents = true;
+    }
+
+    private static void UpdatePaths()
+    {
+        using (new DisableWatchers())
+        {
+            try
+            {
+                GameWatcher.Path = Config.GamePath;
+            }
+            catch
+            {
+                // Dir doesn't exist; hold off till game path refresh
+            }
+
+            SaveStoreWatcher.Path = Paths.SaveStore;
+        }
     }
 
     private static void GameWatcher_Changed(object sender, FileSystemEventArgs e)
