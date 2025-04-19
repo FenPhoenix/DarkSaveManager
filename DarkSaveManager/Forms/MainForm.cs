@@ -460,27 +460,9 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
         Core.RefreshViewAllLists();
     }
 
-    private void ThiefGameBrowseButton_Click(object sender, EventArgs e)
-    {
-        using FolderBrowserDialog d = new();
-        if (d.ShowDialogDark(this) != DialogResult.OK) return;
-        ThiefGameTextBox.Text = d.SelectedPath;
-        UpdateGamePath();
-    }
-
-    private void ThiefGameTextBox_Leave(object sender, EventArgs e)
-    {
-        UpdateGamePath();
-    }
-
     private void RefreshButton_Click(object sender, EventArgs e)
     {
         Core.RefreshViewAllLists();
-    }
-
-    internal void SetGamePathField(string gamePath)
-    {
-        ThiefGameTextBox.Text = gamePath;
     }
 
     private void StoredSaveDeleteButton_Click(object sender, EventArgs e)
@@ -507,12 +489,30 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
 
     private void GamesComboBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-
+        if (EventsDisabled > 0) return;
     }
 
     private void AddGameButton_Click(object sender, EventArgs e)
     {
+        using var f = new AddGameForm();
+        if (f.ShowDialog() != DialogResult.OK) return;
 
+        Core.AddGame(f.Result);
+    }
+
+    public void UpdateGamesList()
+    {
+        using (new DisableEvents())
+        using (new UpdateRegion(GamesComboBox))
+        {
+            GamesComboBox.Items.Clear();
+            foreach (Game game in Config.Games)
+            {
+                GamesComboBox.Items.Add(game.Name);
+            }
+        }
+
+        UpdateGamePath();
     }
 
     private void EditGameButton_Click(object sender, EventArgs e)

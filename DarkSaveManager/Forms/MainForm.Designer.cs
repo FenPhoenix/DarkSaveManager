@@ -39,9 +39,6 @@ sealed partial class MainForm
         InGameSavesLabel = new DarkLabel();
         Test2Button = new DarkButton();
         SwapToGameButton = new DarkButton();
-        ThiefGameTextBox = new DarkTextBox();
-        GameSaveDirectoryLabel = new DarkLabel();
-        ThiefGameBrowseButton = new DarkButton();
         RefreshButton = new DarkButton();
         StoredSaveDeleteButton = new DarkButton();
         GamesGroupBox = new DarkGroupBox();
@@ -160,32 +157,6 @@ sealed partial class MainForm
         SwapToGameButton.Text = "Swap ->";
         SwapToGameButton.Click += SwapToGameButton_Click;
         // 
-        // ThiefGameTextBox
-        // 
-        ThiefGameTextBox.Location = new Point(16, 96);
-        ThiefGameTextBox.Name = "ThiefGameTextBox";
-        ThiefGameTextBox.Size = new Size(640, 23);
-        ThiefGameTextBox.TabIndex = 4;
-        ThiefGameTextBox.Leave += ThiefGameTextBox_Leave;
-        // 
-        // GameSaveDirectoryLabel
-        // 
-        GameSaveDirectoryLabel.AutoSize = true;
-        GameSaveDirectoryLabel.Location = new Point(16, 80);
-        GameSaveDirectoryLabel.Name = "GameSaveDirectoryLabel";
-        GameSaveDirectoryLabel.Size = new Size(117, 15);
-        GameSaveDirectoryLabel.TabIndex = 5;
-        GameSaveDirectoryLabel.Text = "Game save directory:";
-        // 
-        // ThiefGameBrowseButton
-        // 
-        ThiefGameBrowseButton.Location = new Point(656, 96);
-        ThiefGameBrowseButton.Name = "ThiefGameBrowseButton";
-        ThiefGameBrowseButton.Size = new Size(83, 23);
-        ThiefGameBrowseButton.TabIndex = 6;
-        ThiefGameBrowseButton.Text = "Browse...";
-        ThiefGameBrowseButton.Click += ThiefGameBrowseButton_Click;
-        // 
         // RefreshButton
         // 
         RefreshButton.Location = new Point(784, 104);
@@ -210,9 +181,6 @@ sealed partial class MainForm
         GamesGroupBox.Controls.Add(EditGameButton);
         GamesGroupBox.Controls.Add(AddGameButton);
         GamesGroupBox.Controls.Add(GamesComboBox);
-        GamesGroupBox.Controls.Add(GameSaveDirectoryLabel);
-        GamesGroupBox.Controls.Add(ThiefGameTextBox);
-        GamesGroupBox.Controls.Add(ThiefGameBrowseButton);
         GamesGroupBox.Location = new Point(16, 16);
         GamesGroupBox.Name = "GamesGroupBox";
         GamesGroupBox.Size = new Size(752, 144);
@@ -299,7 +267,6 @@ sealed partial class MainForm
         FormClosing += MainForm_FormClosing;
         FormClosed += MainForm_FormClosed;
         GamesGroupBox.ResumeLayout(false);
-        GamesGroupBox.PerformLayout();
         EverythingPanel.ResumeLayout(false);
         EverythingPanel.PerformLayout();
         ResumeLayout(false);
@@ -316,9 +283,6 @@ sealed partial class MainForm
     private DarkLabel InGameSavesLabel;
     private DarkButton Test2Button;
     private DarkButton SwapToGameButton;
-    private DarkTextBox ThiefGameTextBox;
-    private DarkLabel GameSaveDirectoryLabel;
-    private DarkButton ThiefGameBrowseButton;
     private DarkButton RefreshButton;
     private DarkButton StoredSaveDeleteButton;
     private DarkGroupBox GamesGroupBox;

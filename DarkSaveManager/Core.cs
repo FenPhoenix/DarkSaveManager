@@ -67,7 +67,7 @@ internal static class Core
 
         RefreshViewAllLists();
 
-        View.SetGamePathField(Config.GamePath);
+        View.UpdateGamesList();
 
         UpdatePaths();
 
@@ -671,5 +671,15 @@ internal static class Core
         {
             View.ShowAlert($"Unable to open log file.{NL}{NL}" + Paths.LogFile, LText.AlertMessages.Error);
         }
+    }
+
+    internal static void AddGame(Game game)
+    {
+        Config.Games.Add(game);
+        if (Config.Games.Count == 1)
+        {
+            Config.CurrentGame = Config.Games[0];
+        }
+        View.UpdateGamesList();
     }
 }

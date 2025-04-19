@@ -47,6 +47,13 @@ public readonly ref struct RentScope<T>
     }
 }
 
+public sealed class Game
+{
+    public string Name = "";
+    public string GameSavesPath = "";
+    public string StoredSavesDirName = "";
+}
+
 [PublicAPI]
 public static class ByteSize
 {

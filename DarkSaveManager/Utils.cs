@@ -57,6 +57,9 @@ internal static partial class Utils
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsIniHeader(this string line) => !line.IsEmpty() && line[0] == '[' && line[^1] == ']';
+
     #region Empty / whitespace checks
 
     /// <summary>
