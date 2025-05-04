@@ -73,6 +73,7 @@ internal sealed class DarkTreeView : TreeView, IDarkable, IUpdateRegion
         Color textColor_Normal = darkMode ? DarkColors.LightText : SystemColors.ControlText;
         Color textColor_Highlighted_Focused = darkMode ? DarkColors.Fen_HighlightText : SystemColors.HighlightText;
         Color textColor_Highlighted_NotFocused = darkMode ? DarkColors.Fen_HighlightText : SystemColors.ControlText;
+        Color textColorDisabled = darkMode ? DarkColors.DisabledText : SystemColors.GrayText;
 
         Brush backColorBrush;
         Color textColor;
@@ -100,7 +101,7 @@ internal sealed class DarkTreeView : TreeView, IDarkable, IUpdateRegion
         else
         {
             backColorBrush = nodeFocused ? bgBrush_Highlighted_Focused : bgBrush_Normal;
-            textColor = nodeFocused ? textColor_Highlighted_Focused : textColor_Normal;
+            textColor = nodeFocused ? textColor_Highlighted_Focused : !Enabled ? textColorDisabled : textColor_Normal;
         }
 
         // IMPORTANT(TreeView node draw): DO NOT change any of the params "e.Node.Bounds" or "TextFormatFlags.NoPrefix"

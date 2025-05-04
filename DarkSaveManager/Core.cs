@@ -37,6 +37,7 @@ internal static class Core
 
     internal static void Init()
     {
+        Directory.CreateDirectory(Paths.Data);
         Directory.CreateDirectory(Paths.SaveStore);
         Directory.CreateDirectory(Paths.Temp);
 

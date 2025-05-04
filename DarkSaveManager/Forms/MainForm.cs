@@ -215,6 +215,7 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
                 {
                     lazyLoadedControl.DarkModeEnabled = darkMode;
                 }
+                GamePathErrorPictureBox.Image = Images.RedExclCircle;
             }
         }
         finally
@@ -241,6 +242,10 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
             {
                 InGameSavesTreeView.Nodes.Add(saveData?.FriendlySaveName ?? LText.Global.EmptySaveSlot);
             }
+            if (InGameSavesTreeView.Nodes.Count > 0)
+            {
+                InGameSavesTreeView.SelectedNode = InGameSavesTreeView.Nodes[0];
+            }
         }
         finally
         {
@@ -257,6 +262,10 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
             foreach (SaveData saveData in saveDataList)
             {
                 StoredSavesTreeView.Nodes.Add(saveData.FriendlySaveName);
+            }
+            if (StoredSavesTreeView.Nodes.Count > 0)
+            {
+                StoredSavesTreeView.SelectedNode = StoredSavesTreeView.Nodes[0];
             }
         }
         finally
@@ -287,7 +296,10 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
 
     private void SwapToGameButton_Click(object sender, EventArgs e)
     {
-        Core.SwapSaveToGame();
+        if (StoredSavesTreeView.SelectedNode != null && InGameSavesTreeView.SelectedNode != null)
+        {
+            Core.SwapSaveToGame_DragDrop(StoredSavesTreeView.SelectedNode.Index, InGameSavesTreeView.SelectedNode.Index);
+        }
     }
 
     internal bool TryGetSelectedInGameSaveIndex(out int index)
@@ -356,6 +368,11 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
         }
     }
 
+    private void StoredSavesTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+    {
+        SwapToGameButton.Enabled = StoredSavesTreeView.SelectedNode != null && InGameSavesTreeView.SelectedNode != null;
+    }
+
     private void InGameSavesTreeView_AfterSelect(object sender, TreeViewEventArgs e)
     {
         if (Core.TryGetSaveDataForSelectedGameSave(out _))
@@ -368,6 +385,8 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
             CopyToStoreButton.Enabled = false;
             MoveToStoreButton.Enabled = false;
         }
+
+        SwapToGameButton.Enabled = StoredSavesTreeView.SelectedNode != null && InGameSavesTreeView.SelectedNode != null;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -455,9 +474,19 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
     private void UpdateGamePath()
     {
         Config.GamePath = ThiefGameTextBox.Text;
+
+        UpdateUIForGamePath();
+
         ConfigIni.WriteIni();
         Core.RefreshGamePath();
         Core.RefreshViewAllLists();
+    }
+
+    private void UpdateUIForGamePath()
+    {
+        bool gamePathIsValid = Directory.Exists(Config.GamePath);
+        ListsPanel.Enabled = gamePathIsValid;
+        GamePathErrorPictureBox.Visible = !gamePathIsValid;
     }
 
     private void ThiefGameBrowseButton_Click(object sender, EventArgs e)
@@ -481,6 +510,7 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
     internal void SetGamePathField(string gamePath)
     {
         ThiefGameTextBox.Text = gamePath;
+        UpdateUIForGamePath();
     }
 
     private void StoredSaveDeleteButton_Click(object sender, EventArgs e)
@@ -503,25 +533,5 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
 
         Config.VisualTheme = VisualThemeCheckBox.Checked ? VisualTheme.Dark : VisualTheme.Classic;
         SetTheme(Config.VisualTheme);
-    }
-
-    private void GamesComboBox_SelectedIndexChanged(object sender, EventArgs e)
-    {
-
-    }
-
-    private void AddGameButton_Click(object sender, EventArgs e)
-    {
-
-    }
-
-    private void EditGameButton_Click(object sender, EventArgs e)
-    {
-
-    }
-
-    private void RemoveGameButton_Click(object sender, EventArgs e)
-    {
-
     }
 }
