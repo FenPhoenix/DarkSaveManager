@@ -30,6 +30,13 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
         {
             VisualThemeCheckBox.Checked = Config.DarkMode;
         }
+
+        Text = "Dark Save Manager " + Application.ProductVersion;
+
+#if RELEASE_PUBLIC
+        Test1Button.Hide();
+        Test2Button.Hide();
+#endif
     }
 
     protected override void OnLoad(EventArgs e)

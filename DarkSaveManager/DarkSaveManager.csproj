@@ -10,7 +10,15 @@
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<WarningsAsErrors>Nullable</WarningsAsErrors>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<Configurations>Debug;Release;Debug_UIWork</Configurations>
+		<Configurations>Debug;Release;Debug_UIWork;Release_Public</Configurations>
+
+		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+
+		<AssemblyTitle>Dark Save Manager</AssemblyTitle>
+		<Product>Dark Save Manager</Product>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<Description>A save manager/extender for Dark Engine games.</Description>
+		<Copyright>Copyright © 2025</Copyright>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UIWork|AnyCPU'">
