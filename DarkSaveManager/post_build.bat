@@ -20,6 +20,8 @@ del /F "%TargetDir%JetBrains.Annotations.dll"
 
 "%system%xcopy" "%SolutionDir%BinReleaseOnly" "%TargetDir%" /y /i /e
 
+"%system%xcopy" "%ProjectDir%Resources\DarkSaveManager.ico" "%TargetDir%" /y /i
+
 rem Personal local-only file (git-ignored). It contains stuff that is only appropriate for my personal setup and
 rem might well mess up someone else's. So don't worry about it.
 if exist "%ProjectDir%post_build_fen_personal_dev.bat" (
