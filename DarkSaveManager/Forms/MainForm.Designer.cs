@@ -173,9 +173,9 @@ sealed partial class MainForm
         GameSaveDirectoryLabel.AutoSize = true;
         GameSaveDirectoryLabel.Location = new Point(16, 16);
         GameSaveDirectoryLabel.Name = "GameSaveDirectoryLabel";
-        GameSaveDirectoryLabel.Size = new Size(260, 15);
+        GameSaveDirectoryLabel.Size = new Size(265, 15);
         GameSaveDirectoryLabel.TabIndex = 0;
-        GameSaveDirectoryLabel.Text = "Game save directory (example: C:\\Thief2\\saves):";
+        GameSaveDirectoryLabel.Text = "Game saves directory (example: C:\\Thief2\\saves):";
         // 
         // ThiefGameBrowseButton
         // 

@@ -499,6 +499,8 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
     private void ThiefGameBrowseButton_Click(object sender, EventArgs e)
     {
         using FolderBrowserDialog d = new();
+        d.UseDescriptionForTitle = true;
+        d.Description = "Select game saves directory";
         if (d.ShowDialogDark(this) != DialogResult.OK) return;
         ThiefGameTextBox.Text = d.SelectedPath;
         UpdateGamePath();
