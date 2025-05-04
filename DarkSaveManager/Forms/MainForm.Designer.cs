@@ -44,20 +44,14 @@ sealed partial class MainForm
         ThiefGameBrowseButton = new DarkButton();
         RefreshButton = new DarkButton();
         StoredSaveDeleteButton = new DarkButton();
-        GamesGroupBox = new DarkGroupBox();
-        RemoveGameButton = new DarkButton();
-        EditGameButton = new DarkButton();
-        AddGameButton = new DarkButton();
-        GamesComboBox = new DarkComboBox();
         EverythingPanel = new Panel();
         VisualThemeCheckBox = new DarkCheckBox();
-        GamesGroupBox.SuspendLayout();
         EverythingPanel.SuspendLayout();
         SuspendLayout();
         // 
         // Test1Button
         // 
-        Test1Button.Location = new Point(784, 40);
+        Test1Button.Location = new Point(784, 88);
         Test1Button.Name = "Test1Button";
         Test1Button.Size = new Size(83, 23);
         Test1Button.TabIndex = 0;
@@ -70,12 +64,12 @@ sealed partial class MainForm
         InGameSavesTreeView.FullRowSelect = true;
         InGameSavesTreeView.HideSelection = false;
         InGameSavesTreeView.LabelEdit = true;
-        InGameSavesTreeView.Location = new Point(504, 224);
+        InGameSavesTreeView.Location = new Point(463, 96);
         InGameSavesTreeView.Name = "InGameSavesTreeView";
         InGameSavesTreeView.ShowLines = false;
         InGameSavesTreeView.ShowPlusMinus = false;
         InGameSavesTreeView.ShowRootLines = false;
-        InGameSavesTreeView.Size = new Size(248, 464);
+        InGameSavesTreeView.Size = new Size(305, 648);
         InGameSavesTreeView.TabIndex = 1;
         InGameSavesTreeView.AfterLabelEdit += InGameSavesTreeView_AfterLabelEdit;
         InGameSavesTreeView.ItemDrag += InGameSavesTreeView_ItemDrag;
@@ -90,12 +84,12 @@ sealed partial class MainForm
         StoredSavesTreeView.FullRowSelect = true;
         StoredSavesTreeView.HideSelection = false;
         StoredSavesTreeView.LabelEdit = true;
-        StoredSavesTreeView.Location = new Point(56, 224);
+        StoredSavesTreeView.Location = new Point(15, 96);
         StoredSavesTreeView.Name = "StoredSavesTreeView";
         StoredSavesTreeView.ShowLines = false;
         StoredSavesTreeView.ShowPlusMinus = false;
         StoredSavesTreeView.ShowRootLines = false;
-        StoredSavesTreeView.Size = new Size(248, 464);
+        StoredSavesTreeView.Size = new Size(305, 648);
         StoredSavesTreeView.TabIndex = 1;
         StoredSavesTreeView.AfterLabelEdit += StoredSavesTreeView_AfterLabelEdit;
         StoredSavesTreeView.ItemDrag += StoredSavesTreeView_ItemDrag;
@@ -106,7 +100,7 @@ sealed partial class MainForm
         // MoveToStoreButton
         // 
         MoveToStoreButton.Enabled = false;
-        MoveToStoreButton.Location = new Point(368, 368);
+        MoveToStoreButton.Location = new Point(352, 240);
         MoveToStoreButton.Name = "MoveToStoreButton";
         MoveToStoreButton.Size = new Size(75, 23);
         MoveToStoreButton.TabIndex = 2;
@@ -116,7 +110,7 @@ sealed partial class MainForm
         // CopyToStoreButton
         // 
         CopyToStoreButton.Enabled = false;
-        CopyToStoreButton.Location = new Point(368, 344);
+        CopyToStoreButton.Location = new Point(352, 216);
         CopyToStoreButton.Name = "CopyToStoreButton";
         CopyToStoreButton.Size = new Size(75, 23);
         CopyToStoreButton.TabIndex = 2;
@@ -126,7 +120,7 @@ sealed partial class MainForm
         // StoredSavesLabel
         // 
         StoredSavesLabel.AutoSize = true;
-        StoredSavesLabel.Location = new Point(56, 208);
+        StoredSavesLabel.Location = new Point(15, 80);
         StoredSavesLabel.Name = "StoredSavesLabel";
         StoredSavesLabel.Size = new Size(75, 15);
         StoredSavesLabel.TabIndex = 3;
@@ -135,7 +129,7 @@ sealed partial class MainForm
         // InGameSavesLabel
         // 
         InGameSavesLabel.AutoSize = true;
-        InGameSavesLabel.Location = new Point(504, 208);
+        InGameSavesLabel.Location = new Point(463, 80);
         InGameSavesLabel.Name = "InGameSavesLabel";
         InGameSavesLabel.Size = new Size(86, 15);
         InGameSavesLabel.TabIndex = 3;
@@ -143,7 +137,7 @@ sealed partial class MainForm
         // 
         // Test2Button
         // 
-        Test2Button.Location = new Point(784, 64);
+        Test2Button.Location = new Point(784, 112);
         Test2Button.Name = "Test2Button";
         Test2Button.Size = new Size(83, 23);
         Test2Button.TabIndex = 0;
@@ -153,7 +147,7 @@ sealed partial class MainForm
         // SwapToGameButton
         // 
         SwapToGameButton.Enabled = false;
-        SwapToGameButton.Location = new Point(368, 400);
+        SwapToGameButton.Location = new Point(352, 272);
         SwapToGameButton.Name = "SwapToGameButton";
         SwapToGameButton.Size = new Size(75, 23);
         SwapToGameButton.TabIndex = 2;
@@ -162,7 +156,7 @@ sealed partial class MainForm
         // 
         // ThiefGameTextBox
         // 
-        ThiefGameTextBox.Location = new Point(16, 96);
+        ThiefGameTextBox.Location = new Point(16, 32);
         ThiefGameTextBox.Name = "ThiefGameTextBox";
         ThiefGameTextBox.Size = new Size(640, 23);
         ThiefGameTextBox.TabIndex = 4;
@@ -171,15 +165,15 @@ sealed partial class MainForm
         // GameSaveDirectoryLabel
         // 
         GameSaveDirectoryLabel.AutoSize = true;
-        GameSaveDirectoryLabel.Location = new Point(16, 80);
+        GameSaveDirectoryLabel.Location = new Point(16, 16);
         GameSaveDirectoryLabel.Name = "GameSaveDirectoryLabel";
-        GameSaveDirectoryLabel.Size = new Size(117, 15);
+        GameSaveDirectoryLabel.Size = new Size(260, 15);
         GameSaveDirectoryLabel.TabIndex = 5;
-        GameSaveDirectoryLabel.Text = "Game save directory:";
+        GameSaveDirectoryLabel.Text = "Game save directory (example: C:\\Thief2\\saves):";
         // 
         // ThiefGameBrowseButton
         // 
-        ThiefGameBrowseButton.Location = new Point(656, 96);
+        ThiefGameBrowseButton.Location = new Point(656, 32);
         ThiefGameBrowseButton.Name = "ThiefGameBrowseButton";
         ThiefGameBrowseButton.Size = new Size(83, 23);
         ThiefGameBrowseButton.TabIndex = 6;
@@ -188,7 +182,7 @@ sealed partial class MainForm
         // 
         // RefreshButton
         // 
-        RefreshButton.Location = new Point(784, 104);
+        RefreshButton.Location = new Point(784, 48);
         RefreshButton.Name = "RefreshButton";
         RefreshButton.Size = new Size(83, 23);
         RefreshButton.TabIndex = 7;
@@ -197,72 +191,22 @@ sealed partial class MainForm
         // 
         // StoredSaveDeleteButton
         // 
-        StoredSaveDeleteButton.Location = new Point(281, 200);
+        StoredSaveDeleteButton.Location = new Point(240, 72);
         StoredSaveDeleteButton.Name = "StoredSaveDeleteButton";
         StoredSaveDeleteButton.Size = new Size(24, 23);
         StoredSaveDeleteButton.TabIndex = 8;
         StoredSaveDeleteButton.Text = "X";
         StoredSaveDeleteButton.Click += StoredSaveDeleteButton_Click;
         // 
-        // GamesGroupBox
-        // 
-        GamesGroupBox.Controls.Add(RemoveGameButton);
-        GamesGroupBox.Controls.Add(EditGameButton);
-        GamesGroupBox.Controls.Add(AddGameButton);
-        GamesGroupBox.Controls.Add(GamesComboBox);
-        GamesGroupBox.Controls.Add(GameSaveDirectoryLabel);
-        GamesGroupBox.Controls.Add(ThiefGameTextBox);
-        GamesGroupBox.Controls.Add(ThiefGameBrowseButton);
-        GamesGroupBox.Location = new Point(16, 16);
-        GamesGroupBox.Name = "GamesGroupBox";
-        GamesGroupBox.Size = new Size(752, 144);
-        GamesGroupBox.TabIndex = 9;
-        GamesGroupBox.TabStop = false;
-        GamesGroupBox.Text = "Games";
-        // 
-        // RemoveGameButton
-        // 
-        RemoveGameButton.Location = new Point(656, 32);
-        RemoveGameButton.Name = "RemoveGameButton";
-        RemoveGameButton.Size = new Size(80, 23);
-        RemoveGameButton.TabIndex = 8;
-        RemoveGameButton.Text = "Remove...";
-        RemoveGameButton.Click += RemoveGameButton_Click;
-        // 
-        // EditGameButton
-        // 
-        EditGameButton.Location = new Point(592, 32);
-        EditGameButton.Name = "EditGameButton";
-        EditGameButton.Size = new Size(64, 23);
-        EditGameButton.TabIndex = 8;
-        EditGameButton.Text = "Edit...";
-        EditGameButton.Click += EditGameButton_Click;
-        // 
-        // AddGameButton
-        // 
-        AddGameButton.Location = new Point(536, 32);
-        AddGameButton.Name = "AddGameButton";
-        AddGameButton.Size = new Size(56, 23);
-        AddGameButton.TabIndex = 8;
-        AddGameButton.Text = "Add...";
-        AddGameButton.Click += AddGameButton_Click;
-        // 
-        // GamesComboBox
-        // 
-        GamesComboBox.FormattingEnabled = true;
-        GamesComboBox.Location = new Point(16, 32);
-        GamesComboBox.Name = "GamesComboBox";
-        GamesComboBox.Size = new Size(520, 23);
-        GamesComboBox.TabIndex = 7;
-        GamesComboBox.SelectedIndexChanged += GamesComboBox_SelectedIndexChanged;
-        // 
         // EverythingPanel
         // 
         EverythingPanel.Controls.Add(VisualThemeCheckBox);
-        EverythingPanel.Controls.Add(GamesGroupBox);
         EverythingPanel.Controls.Add(Test1Button);
         EverythingPanel.Controls.Add(StoredSaveDeleteButton);
+        EverythingPanel.Controls.Add(GameSaveDirectoryLabel);
+        EverythingPanel.Controls.Add(ThiefGameTextBox);
         EverythingPanel.Controls.Add(Test2Button);
+        EverythingPanel.Controls.Add(ThiefGameBrowseButton);
         EverythingPanel.Controls.Add(RefreshButton);
         EverythingPanel.Controls.Add(InGameSavesTreeView);
         EverythingPanel.Controls.Add(InGameSavesLabel);
@@ -293,13 +237,13 @@ sealed partial class MainForm
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(881, 771);
         Controls.Add(EverythingPanel);
+        FormBorderStyle = FormBorderStyle.FixedSingle;
+        MaximizeBox = false;
         Name = "MainForm";
         ShowInTaskbar = true;
         Text = "Dark Save Manager";
         FormClosing += MainForm_FormClosing;
         FormClosed += MainForm_FormClosed;
-        GamesGroupBox.ResumeLayout(false);
-        GamesGroupBox.PerformLayout();
         EverythingPanel.ResumeLayout(false);
         EverythingPanel.PerformLayout();
         ResumeLayout(false);
@@ -321,11 +265,6 @@ sealed partial class MainForm
     private DarkButton ThiefGameBrowseButton;
     private DarkButton RefreshButton;
     private DarkButton StoredSaveDeleteButton;
-    private DarkGroupBox GamesGroupBox;
-    private DarkComboBox GamesComboBox;
-    private DarkButton RemoveGameButton;
-    private DarkButton EditGameButton;
-    private DarkButton AddGameButton;
     private Panel EverythingPanel;
     private DarkCheckBox VisualThemeCheckBox;
 }
