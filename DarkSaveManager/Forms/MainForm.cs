@@ -28,7 +28,18 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
 
         using (new DisableEvents(this))
         {
-            VisualThemeCheckBox.Checked = Config.DarkMode;
+            if (Config.FollowSystemTheme)
+            {
+                FollowSystemThemeRadioButton.Checked = true;
+            }
+            else if (Config.VisualTheme == VisualTheme.Classic)
+            {
+                LightThemeRadioButton.Checked = true;
+            }
+            else if (Config.VisualTheme == VisualTheme.Dark)
+            {
+                DarkThemeRadioButton.Checked = true;
+            }
         }
 
         Text = "Dark Save Manager " + Application.ProductVersion;
@@ -535,12 +546,26 @@ public sealed partial class MainForm : DarkFormBase, IEventDisabler, IMessageFil
         }
     }
 
-    // TODO: Make this a nicer looking standard "sun/moon" light/dark switch
-    private void VisualThemeCheckBox_CheckedChanged(object sender, EventArgs e)
+    private void LightThemeRadioButton_CheckedChanged(object sender, EventArgs e)
     {
         if (EventsDisabled > 0) return;
 
-        Config.VisualTheme = VisualThemeCheckBox.Checked ? VisualTheme.Dark : VisualTheme.Classic;
+        if (LightThemeRadioButton.Checked)
+        {
+            Config.FollowSystemTheme = false;
+            Config.VisualTheme = VisualTheme.Classic;
+        }
+        else if (DarkThemeRadioButton.Checked)
+        {
+            Config.FollowSystemTheme = false;
+            Config.VisualTheme = VisualTheme.Dark;
+        }
+        else
+        {
+            Config.FollowSystemTheme = true;
+            Config.VisualTheme = Core.GetSystemTheme();
+        }
+
         SetTheme(Config.VisualTheme);
     }
 }

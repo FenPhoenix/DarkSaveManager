@@ -45,18 +45,22 @@ sealed partial class MainForm
         RefreshButton = new DarkButton();
         StoredSaveDeleteButton = new DarkButton();
         EverythingPanel = new Panel();
+        VisualThemeGroupBox = new DarkGroupBox();
+        FollowSystemThemeRadioButton = new DarkRadioButton();
+        DarkThemeRadioButton = new DarkRadioButton();
+        LightThemeRadioButton = new DarkRadioButton();
         GamePathErrorPictureBox = new PictureBox();
         ListsHelpLabel = new DarkLabel();
         ListsPanel = new DrawnPanel();
-        VisualThemeCheckBox = new DarkCheckBox();
         EverythingPanel.SuspendLayout();
+        VisualThemeGroupBox.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)GamePathErrorPictureBox).BeginInit();
         ListsPanel.SuspendLayout();
         SuspendLayout();
         // 
         // Test1Button
         // 
-        Test1Button.Location = new Point(784, 88);
+        Test1Button.Location = new Point(784, 176);
         Test1Button.Name = "Test1Button";
         Test1Button.Size = new Size(83, 23);
         Test1Button.TabIndex = 6;
@@ -143,7 +147,7 @@ sealed partial class MainForm
         // 
         // Test2Button
         // 
-        Test2Button.Location = new Point(784, 112);
+        Test2Button.Location = new Point(784, 200);
         Test2Button.Name = "Test2Button";
         Test2Button.Size = new Size(83, 23);
         Test2Button.TabIndex = 7;
@@ -188,7 +192,7 @@ sealed partial class MainForm
         // 
         // RefreshButton
         // 
-        RefreshButton.Location = new Point(784, 48);
+        RefreshButton.Location = new Point(784, 136);
         RefreshButton.Name = "RefreshButton";
         RefreshButton.Size = new Size(83, 23);
         RefreshButton.TabIndex = 4;
@@ -206,10 +210,10 @@ sealed partial class MainForm
         // 
         // EverythingPanel
         // 
+        EverythingPanel.Controls.Add(VisualThemeGroupBox);
         EverythingPanel.Controls.Add(GamePathErrorPictureBox);
         EverythingPanel.Controls.Add(ListsHelpLabel);
         EverythingPanel.Controls.Add(ListsPanel);
-        EverythingPanel.Controls.Add(VisualThemeCheckBox);
         EverythingPanel.Controls.Add(Test1Button);
         EverythingPanel.Controls.Add(GameSaveDirectoryLabel);
         EverythingPanel.Controls.Add(ThiefGameTextBox);
@@ -219,8 +223,52 @@ sealed partial class MainForm
         EverythingPanel.Dock = DockStyle.Fill;
         EverythingPanel.Location = new Point(0, 0);
         EverythingPanel.Name = "EverythingPanel";
-        EverythingPanel.Size = new Size(878, 792);
+        EverythingPanel.Size = new Size(964, 792);
         EverythingPanel.TabIndex = 0;
+        // 
+        // VisualThemeGroupBox
+        // 
+        VisualThemeGroupBox.Controls.Add(FollowSystemThemeRadioButton);
+        VisualThemeGroupBox.Controls.Add(DarkThemeRadioButton);
+        VisualThemeGroupBox.Controls.Add(LightThemeRadioButton);
+        VisualThemeGroupBox.Location = new Point(784, 8);
+        VisualThemeGroupBox.Name = "VisualThemeGroupBox";
+        VisualThemeGroupBox.Size = new Size(168, 104);
+        VisualThemeGroupBox.TabIndex = 14;
+        VisualThemeGroupBox.TabStop = false;
+        VisualThemeGroupBox.Text = "Visual theme";
+        // 
+        // FollowSystemThemeRadioButton
+        // 
+        FollowSystemThemeRadioButton.AutoSize = true;
+        FollowSystemThemeRadioButton.Checked = true;
+        FollowSystemThemeRadioButton.Location = new Point(16, 72);
+        FollowSystemThemeRadioButton.Name = "FollowSystemThemeRadioButton";
+        FollowSystemThemeRadioButton.Size = new Size(137, 19);
+        FollowSystemThemeRadioButton.TabIndex = 0;
+        FollowSystemThemeRadioButton.TabStop = true;
+        FollowSystemThemeRadioButton.Text = "Follow system theme";
+        FollowSystemThemeRadioButton.CheckedChanged += LightThemeRadioButton_CheckedChanged;
+        // 
+        // DarkThemeRadioButton
+        // 
+        DarkThemeRadioButton.AutoSize = true;
+        DarkThemeRadioButton.Location = new Point(16, 48);
+        DarkThemeRadioButton.Name = "DarkThemeRadioButton";
+        DarkThemeRadioButton.Size = new Size(49, 19);
+        DarkThemeRadioButton.TabIndex = 0;
+        DarkThemeRadioButton.Text = "Dark";
+        DarkThemeRadioButton.CheckedChanged += LightThemeRadioButton_CheckedChanged;
+        // 
+        // LightThemeRadioButton
+        // 
+        LightThemeRadioButton.AutoSize = true;
+        LightThemeRadioButton.Location = new Point(16, 24);
+        LightThemeRadioButton.Name = "LightThemeRadioButton";
+        LightThemeRadioButton.Size = new Size(52, 19);
+        LightThemeRadioButton.TabIndex = 0;
+        LightThemeRadioButton.Text = "Light";
+        LightThemeRadioButton.CheckedChanged += LightThemeRadioButton_CheckedChanged;
         // 
         // GamePathErrorPictureBox
         // 
@@ -255,21 +303,11 @@ sealed partial class MainForm
         ListsPanel.Size = new Size(760, 672);
         ListsPanel.TabIndex = 5;
         // 
-        // VisualThemeCheckBox
-        // 
-        VisualThemeCheckBox.AutoSize = true;
-        VisualThemeCheckBox.Location = new Point(784, 16);
-        VisualThemeCheckBox.Name = "VisualThemeCheckBox";
-        VisualThemeCheckBox.Size = new Size(84, 19);
-        VisualThemeCheckBox.TabIndex = 3;
-        VisualThemeCheckBox.Text = "Dark mode";
-        VisualThemeCheckBox.CheckedChanged += VisualThemeCheckBox_CheckedChanged;
-        // 
         // MainForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(878, 792);
+        ClientSize = new Size(964, 792);
         Controls.Add(EverythingPanel);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         MaximizeBox = false;
@@ -280,6 +318,8 @@ sealed partial class MainForm
         FormClosed += MainForm_FormClosed;
         EverythingPanel.ResumeLayout(false);
         EverythingPanel.PerformLayout();
+        VisualThemeGroupBox.ResumeLayout(false);
+        VisualThemeGroupBox.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)GamePathErrorPictureBox).EndInit();
         ListsPanel.ResumeLayout(false);
         ListsPanel.PerformLayout();
@@ -303,8 +343,11 @@ sealed partial class MainForm
     private DarkButton RefreshButton;
     private DarkButton StoredSaveDeleteButton;
     private Panel EverythingPanel;
-    private DarkCheckBox VisualThemeCheckBox;
     private DrawnPanel ListsPanel;
     private DarkLabel ListsHelpLabel;
     private PictureBox GamePathErrorPictureBox;
+    private DarkGroupBox VisualThemeGroupBox;
+    private DarkRadioButton FollowSystemThemeRadioButton;
+    private DarkRadioButton DarkThemeRadioButton;
+    private DarkRadioButton LightThemeRadioButton;
 }

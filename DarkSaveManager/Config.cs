@@ -9,9 +9,9 @@ internal sealed class ConfigData
 
     internal bool DarkMode => VisualTheme == VisualTheme.Dark;
 
-    internal VisualTheme VisualTheme = VisualTheme.Dark;
+    internal VisualTheme VisualTheme;
 
-    internal bool FollowSystemTheme = false;
+    internal bool FollowSystemTheme = true;
 }
 
 internal static class ConfigIni
@@ -44,7 +44,16 @@ internal static class ConfigIni
                 }
                 else if (lineT.TryGetValueO("VisualTheme=", out value))
                 {
-                    SetEnumValue(value, ref Config.VisualTheme);
+                    if (value == "FollowSystemTheme")
+                    {
+                        Config.FollowSystemTheme = true;
+                        Config.VisualTheme = Core.GetSystemTheme();
+                    }
+                    else
+                    {
+                        Config.FollowSystemTheme = false;
+                        SetEnumValue(value, ref Config.VisualTheme);
+                    }
                 }
             }
         }
@@ -58,6 +67,13 @@ internal static class ConfigIni
     {
         using StreamWriter sw = new(Paths.ConfigIni);
         sw.WriteLine("GamePath=" + Config.GamePath);
-        sw.WriteLine("VisualTheme=" + Config.VisualTheme);
+        if (Config.FollowSystemTheme)
+        {
+            sw.WriteLine("VisualTheme=FollowSystemTheme");
+        }
+        else
+        {
+            sw.WriteLine("VisualTheme=" + Config.VisualTheme);
+        }
     }
 }
