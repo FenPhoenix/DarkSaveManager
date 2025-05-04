@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 using DarkSaveManager.Forms.WinFormsNative;
+using DarkSaveManager.Properties;
 using JetBrains.Annotations;
 
 namespace DarkSaveManager.Forms;
@@ -51,8 +52,7 @@ public
 
     public DarkFormBase()
     {
-        // TODO: Add app icon
-        //base.Icon = Preload.AL_Icon;
+        base.Icon = Resources.DarkSaveManager;
         base.ShowInTaskbar = false;
 
         Win32ThemeHooks.InstallHooks();

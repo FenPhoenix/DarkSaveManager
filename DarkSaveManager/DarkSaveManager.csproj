@@ -19,6 +19,7 @@
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Description>A save manager/extender for Dark Engine games.</Description>
 		<Copyright>Copyright © 2025</Copyright>
+		<ApplicationIcon>Resources\DarkSaveManager.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_UIWork|AnyCPU'">
@@ -41,9 +42,6 @@
 		<Reference Condition="'$(Configuration)'!='Debug_UIWork'" Include="System.Drawing.Primitives">
 			<HintPath>..\bin_dependencies\System.Drawing.Primitives.dll</HintPath>
 		</Reference>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Resources\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Properties\Resources.Designer.cs">
